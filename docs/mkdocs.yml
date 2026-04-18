@@ -140,7 +140,9 @@ nav:
   - Adapters: docs/adapters/index.md
   - Integrations:
     - Overview: docs/integrations/index.md
-    - Consumers: docs/integrations/consumers/index.md
+    - Consumers:
+      - Overview: docs/integrations/consumers/index.md
+      - AduaNext: docs/integrations/consumers/aduanext.md
   - Donations & Crowdfunding: docs/donations/index.md
   - Security: docs/security/index.md
   - API:
