@@ -1,0 +1,168 @@
+# =============================================================================
+# Material for MkDocs - payments-core documentation
+# Payments sidecar for the -core ecosystem
+# =============================================================================
+
+site_name: payments-core
+site_description: "One payments sidecar for the -core ecosystem — ports, adapters, and contract"
+site_url: https://lapc506.github.io/payments-core
+repo_url: https://github.com/lapc506/payments-core
+repo_name: lapc506/payments-core
+edit_uri: edit/main/docs/content/
+
+docs_dir: content
+site_dir: site
+
+# =============================================================================
+# Theme Configuration
+# =============================================================================
+theme:
+  name: material
+  language: en
+  palette:
+    - scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.top
+    - navigation.indexes
+    - search.highlight
+    - search.share
+    - search.suggest
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - content.action.edit
+    - content.action.view
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+    view: material/eye
+
+# =============================================================================
+# Plugins
+# =============================================================================
+plugins:
+  - search:
+      lang: en
+  # Optional plugins — require additional pip installs.
+  # Left commented intentionally for v0.1; a future change enables with
+  # a one-line edit + a bump to requirements.txt.
+  # - mermaid2:
+  #     version: 11.4.1
+  #     zoom: true
+  #     theme: base
+  # - git-revision-date-localized:
+  #     enable_creation_date: true
+  # - git-committers:
+  #     repository: lapc506/payments-core
+  # - minify:
+  #     minify_html: true
+
+# =============================================================================
+# Markdown Extensions
+# =============================================================================
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      title: On this page
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      normalize_issue_symbols: true
+      repo_url_shorthand: true
+      user: lapc506
+      repo: payments-core
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+# =============================================================================
+# Navigation
+# =============================================================================
+nav:
+  - Home: index.md
+  - Governance: docs/governance/index.md
+  - Architecture: docs/architecture/index.md
+  - Ports: docs/ports/index.md
+  - Adapters: docs/adapters/index.md
+  - Integrations:
+    - Overview: docs/integrations/index.md
+    - Consumers: docs/integrations/consumers/index.md
+  - Donations & Crowdfunding: docs/donations/index.md
+  - Security: docs/security/index.md
+  - API:
+    - Overview: docs/api/index.md
+    - Reference: docs/api/reference.md
+  - References: docs/references/index.md
+  - Legal: docs/legal/index.md
+  - Operations: docs/operations/index.md
+
+# =============================================================================
+# Extra
+# =============================================================================
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/lapc506/payments-core
+  generator: false
+
+dev_addr: 0.0.0.0:8002
+
+extra_css:
+  - assets/stylesheets/payments-core.css
+
+extra_javascript:
+  - assets/javascripts/stoplight-elements.mjs
