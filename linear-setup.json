@@ -1,0 +1,24 @@
+{
+  "team": {
+    "key": "DOJ",
+    "name": "DojoOS",
+    "note": "Tracking for payments-core lives in the DojoOS team until/unless a dedicated team is provisioned. Title-prefix issues with 'payments-core:' for filtering."
+  },
+  "git": {
+    "baseBranch": "main",
+    "branchPattern": "{type}/{issueId}-{description}"
+  },
+  "defaults": {
+    "greptileReview": true,
+    "greptileMinConfidence": 5,
+    "squashMerge": true,
+    "slackNotify": false
+  },
+  "openspec": {
+    "specLibraryPath": "openspec/specs",
+    "changesPath": "openspec/changes"
+  },
+  "output": {
+    "briefsPath": "openspec/changes"
+  }
+}
