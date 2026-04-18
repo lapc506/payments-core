@@ -1,0 +1,7 @@
+# payments-core code ownership.
+#
+# Until additional maintainers are added, @lapc506 owns everything in this
+# repository. Later changes can add more specific paths (e.g. adapters/ to the
+# adapter author) above the wildcard without disturbing the default.
+
+* @lapc506
