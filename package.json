@@ -1,0 +1,32 @@
+{
+  "name": "@lapc506/payments-core",
+  "version": "0.0.1",
+  "private": true,
+  "description": "One payments sidecar for the -core ecosystem (Stripe, OnvoPay, Tilopay, dLocal, Revolut, Convera, Ripple, Apple/Google Pay verify).",
+  "license": "BSL-1.1",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier -w .",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist coverage"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.3.0",
+    "typescript": "^5.5.0",
+    "vitest": "^1.6.0"
+  },
+  "packageManager": "pnpm@9.0.0"
+}
