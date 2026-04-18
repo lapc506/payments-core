@@ -38,7 +38,7 @@ The same brainstorming session that produced the verdict also produced the decis
 - **Scope boundaries**:
   - **In**: PaymentIntent, Subscription, Escrow, Payout, Refund, Dispute, Reconciliation, AgenticPayment, FX lookup, WebhookVerifier, Idempotency, Donation (one-time + recurring).
   - **Out**: invoice issuance (stays in `invoice-core`), KYC / AML (stays in `compliance-core`), inventory (stays in consumer backends), client-side SDKs (Apple Pay / Google Pay / flutter_stripe — stay in frontend apps), standalone Visa Direct adapter (no consumer today).
-- **Crowdfunding**: deferred. Captured as a separate change (`crowdfunding-diferred`) that documents the Vaki / Coopeservidores collapse and the Kickstarter / Indiegogo alternatives without implementing them. Trigger for re-evaluation is documented.
+- **Crowdfunding**: deferred. Captured as a separate change (`crowdfunding-deferred`) that documents the Vaki / Coopeservidores collapse and the Kickstarter / Indiegogo alternatives without implementing them. Trigger for re-evaluation is documented.
 
 ## Alternatives rejected
 
