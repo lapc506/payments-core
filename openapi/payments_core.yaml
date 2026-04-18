@@ -1,0 +1,48 @@
+openapi: 3.1.0
+info:
+  title: payments-core
+  version: 0.1.0-stub
+  summary: Placeholder descriptor until proto-contract-v1 lands
+  description: |
+    This is a stub OpenAPI descriptor for `payments-core`. It exposes a single
+    `/health` operation so the documentation site renders the Stoplight
+    Elements embed without a 404. The real descriptor is generated from the
+    protobuf contract in `proto/` by the `proto-contract-v1` change and
+    replaces this file wholesale.
+  license:
+    name: See repository LICENSE.md
+    url: https://github.com/lapc506/payments-core/blob/main/LICENSE.md
+servers:
+  - url: https://api.example.invalid
+    description: Placeholder server; no live endpoint during bootstrap
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Liveness probe
+      description: |
+        Returns `200 OK` with a constant body. Used by load balancers and
+        orchestrators to confirm the process is running. Replaced by the
+        generated descriptor once `proto-contract-v1` lands.
+      responses:
+        "200":
+          description: Service is alive
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+              examples:
+                ok:
+                  value:
+                    status: ok
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum: [ok]
+          description: Literal string "ok" when the service is healthy.
