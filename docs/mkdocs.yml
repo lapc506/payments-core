@@ -141,7 +141,9 @@ nav:
   - Integrations:
     - Overview: docs/integrations/index.md
     - Consumers: docs/integrations/consumers/index.md
-  - Donations & Crowdfunding: docs/donations/index.md
+  - Donations & Crowdfunding:
+    - Overview: docs/donations/index.md
+    - Crowdfunding (deferred): docs/donations/crowdfunding.md
   - Security: docs/security/index.md
   - API:
     - Overview: docs/api/index.md
