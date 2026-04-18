@@ -17,14 +17,21 @@
     "format": "prettier -w .",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
-    "clean": "rm -rf dist coverage"
+    "clean": "rm -rf dist coverage",
+    "proto:lint": "buf lint proto",
+    "proto:generate": "buf generate --template proto/buf.gen.yaml proto && mv -f openapi/payments_core.swagger.yaml openapi/payments_core.yaml",
+    "proto:breaking": "buf breaking proto --against '.git#branch=main,subdir=proto'"
   },
   "devDependencies": {
+    "@bufbuild/buf": "^1.45.0",
+    "@grpc/grpc-js": "^1.12.0",
     "@types/node": "^20.11.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "eslint": "^9.0.0",
+    "google-protobuf": "^3.21.4",
     "prettier": "^3.3.0",
+    "ts-proto": "^2.2.0",
     "typescript": "^5.5.0",
     "vitest": "^1.6.0"
   },

@@ -1,0 +1,506 @@
+// =============================================================================
+// payments-core v1 contract
+// -----------------------------------------------------------------------------
+// One gRPC service (PaymentsCore) + cross-core event messages.
+//
+// Package layout:
+//   - lapc506.payments_core.v1         — service + request/response messages
+//   - lapc506.payments_core.events.v1  — typed events emitted to the bus
+//
+// Hard constraints (see openspec/changes/proto-contract-v1/design.md):
+//   - `idempotency_key` is required on every mutating RPC (field tag 10).
+//   - Gateway selection is an enum field (GatewayPreference), NOT one RPC per
+//     gateway.
+//   - ConfirmCheckoutRequest uses oneof { three_ds_result | wallet_token }.
+//   - v1 is additive-only once frozen. v2 would live in payments_core.v2.proto.
+//
+// The OpenAPI mirror at openapi/payments_core.yaml is regenerated from this
+// file via `pnpm proto:generate`.
+// =============================================================================
+
+syntax = "proto3";
+
+package lapc506.payments_core.v1;
+
+// go_package is required by the openapiv2 generator even though payments-core
+// does not ship a Go binding. Any stable dotted path works; the value is not
+// published.
+option go_package = "github.com/lapc506/payments-core/gen/go/lapc506/payments_core/v1;paymentscorev1";
+
+import "google/protobuf/timestamp.proto";
+
+// =============================================================================
+// Shared value objects
+// =============================================================================
+
+// Money is the canonical amount+currency pair used across the ecosystem.
+// `amount_minor` is in the smallest currency unit (cents, céntimos, drops).
+message Money {
+  int64 amount_minor = 1; // 1234 for $12.34
+  string currency = 2;    // ISO 4217, e.g. "USD" / "CRC"
+}
+
+// GatewayPreference lets callers hint which gateway should handle a request.
+// AUTO (the default) lets payments-core pick based on region, currency, cost,
+// and availability. Adapters for each gateway land in follow-on changes
+// (stripe-adapter-p0, onvopay-adapter-p0, …).
+enum GatewayPreference {
+  GATEWAY_PREFERENCE_UNSPECIFIED = 0;
+  GATEWAY_PREFERENCE_AUTO = 1;
+  GATEWAY_PREFERENCE_STRIPE = 2;
+  GATEWAY_PREFERENCE_ONVOPAY = 3;
+  GATEWAY_PREFERENCE_TILOPAY = 4;
+  GATEWAY_PREFERENCE_DLOCAL = 5;
+  GATEWAY_PREFERENCE_REVOLUT = 6;
+  GATEWAY_PREFERENCE_CONVERA = 7;
+  GATEWAY_PREFERENCE_RIPPLE_XRPL = 8;
+}
+
+// WalletToken is the opaque encrypted payload produced by Apple Pay / Google
+// Pay SDKs on the client. payments-core forwards the bytes to the chosen
+// gateway adapter for decryption and charge.
+message WalletToken {
+  enum Provider {
+    PROVIDER_UNSPECIFIED = 0;
+    PROVIDER_APPLE_PAY = 1;
+    PROVIDER_GOOGLE_PAY = 2;
+  }
+  Provider provider = 1;
+  bytes payload = 2;
+}
+
+// PaymentStatus is the lifecycle stage of a payment intent. Adapters map their
+// provider-specific statuses onto this canonical set.
+enum PaymentStatus {
+  PAYMENT_STATUS_UNSPECIFIED = 0;
+  PAYMENT_STATUS_REQUIRES_ACTION = 1;   // 3DS / SCA challenge pending
+  PAYMENT_STATUS_PROCESSING = 2;
+  PAYMENT_STATUS_SUCCEEDED = 3;
+  PAYMENT_STATUS_FAILED = 4;
+  PAYMENT_STATUS_CANCELED = 5;
+  PAYMENT_STATUS_REFUNDED = 6;
+}
+
+// SubscriptionStatus is the lifecycle stage of a subscription.
+enum SubscriptionStatus {
+  SUBSCRIPTION_STATUS_UNSPECIFIED = 0;
+  SUBSCRIPTION_STATUS_ACTIVE = 1;
+  SUBSCRIPTION_STATUS_PAST_DUE = 2;
+  SUBSCRIPTION_STATUS_CANCELED = 3;
+  SUBSCRIPTION_STATUS_PAUSED = 4;
+}
+
+// EscrowStatus is the lifecycle stage of an escrow hold.
+enum EscrowStatus {
+  ESCROW_STATUS_UNSPECIFIED = 0;
+  ESCROW_STATUS_HELD = 1;
+  ESCROW_STATUS_RELEASED = 2;
+  ESCROW_STATUS_DISPUTED = 3;
+  ESCROW_STATUS_REFUNDED = 4;
+}
+
+// PayoutStatus is the lifecycle stage of a payout to a beneficiary.
+enum PayoutStatus {
+  PAYOUT_STATUS_UNSPECIFIED = 0;
+  PAYOUT_STATUS_PENDING = 1;
+  PAYOUT_STATUS_IN_TRANSIT = 2;
+  PAYOUT_STATUS_PAID = 3;
+  PAYOUT_STATUS_FAILED = 4;
+}
+
+// =============================================================================
+// Service
+// =============================================================================
+
+service PaymentsCore {
+  // ---------------------------------------------------------------------------
+  // Checkout
+  // ---------------------------------------------------------------------------
+  rpc InitiateCheckout(InitiateCheckoutRequest) returns (InitiateCheckoutResponse);
+  rpc ConfirmCheckout(ConfirmCheckoutRequest) returns (ConfirmCheckoutResponse);
+  rpc RefundPayment(RefundPaymentRequest) returns (RefundPaymentResponse);
+
+  // ---------------------------------------------------------------------------
+  // Webhook ingestion (called inbound from gateway-facing HTTP receiver)
+  // ---------------------------------------------------------------------------
+  rpc ProcessWebhook(ProcessWebhookRequest) returns (ProcessWebhookResponse);
+
+  // ---------------------------------------------------------------------------
+  // Subscriptions
+  // ---------------------------------------------------------------------------
+  rpc CreateSubscription(CreateSubscriptionRequest) returns (CreateSubscriptionResponse);
+  rpc SwitchSubscription(SwitchSubscriptionRequest) returns (SwitchSubscriptionResponse);
+  rpc CancelSubscription(CancelSubscriptionRequest) returns (CancelSubscriptionResponse);
+
+  // ---------------------------------------------------------------------------
+  // Escrow
+  // ---------------------------------------------------------------------------
+  rpc HoldEscrow(HoldEscrowRequest) returns (HoldEscrowResponse);
+  rpc ReleaseEscrow(ReleaseEscrowRequest) returns (ReleaseEscrowResponse);
+  rpc DisputeEscrow(DisputeEscrowRequest) returns (DisputeEscrowResponse);
+
+  // ---------------------------------------------------------------------------
+  // Payouts
+  // ---------------------------------------------------------------------------
+  rpc CreatePayout(CreatePayoutRequest) returns (CreatePayoutResponse);
+
+  // ---------------------------------------------------------------------------
+  // Agentic commerce (entry point from agentic-core)
+  // ---------------------------------------------------------------------------
+  rpc InitiateAgenticPayment(InitiateAgenticPaymentRequest) returns (InitiateAgenticPaymentResponse);
+
+  // ---------------------------------------------------------------------------
+  // Reads
+  // ---------------------------------------------------------------------------
+  rpc GetPaymentHistory(GetPaymentHistoryRequest) returns (GetPaymentHistoryResponse);
+  rpc ReconcileDaily(ReconcileDailyRequest) returns (ReconcileDailyResponse);
+}
+
+// =============================================================================
+// Checkout messages
+// =============================================================================
+
+message InitiateCheckoutRequest {
+  // consumer is the tenant tag identifying the caller (e.g. "dojo-os",
+  // "altrupets-api"). Used for routing events and for audit.
+  string consumer = 1;
+
+  // customer_reference is the caller's own identifier for the end user or
+  // organization paying. payments-core does not interpret this string.
+  string customer_reference = 2;
+
+  Money amount = 3;
+  string description = 4;
+
+  // gateway hints which provider to use. AUTO (default) lets payments-core
+  // choose. If the preference is unavailable, payments-core MAY fall back and
+  // the chosen gateway is returned on the response.
+  GatewayPreference gateway = 5;
+
+  // success_url / cancel_url follow the Stripe redirect model. They are
+  // optional for gateways that do not redirect (card-present, wallet-direct).
+  string success_url = 6;
+  string cancel_url = 7;
+
+  // metadata is free-form key/value pairs the caller can attach for its own
+  // bookkeeping. Propagated to emitted events.
+  map<string, string> metadata = 8;
+
+  // Required. Enforced by payments-core against a Postgres uniqueness table
+  // so retried requests return the same intent.
+  string idempotency_key = 10;
+}
+
+message InitiateCheckoutResponse {
+  string intent_id = 1;
+  PaymentStatus status = 2;
+  GatewayPreference chosen_gateway = 3;
+
+  // client_secret / redirect_url are populated depending on the gateway.
+  // client_secret is used by Stripe.js-style SDKs; redirect_url is used by
+  // hosted checkout flows.
+  string client_secret = 4;
+  string redirect_url = 5;
+}
+
+message ConfirmCheckoutRequest {
+  string intent_id = 1;
+
+  // confirmation carries whichever second-leg artifact the gateway needs.
+  // three_ds_result is the opaque token returned by the 3DS challenge; if a
+  // gateway needs a richer multi-leg flow, a follow-on additive RPC
+  // (Initiate3DSChallenge) is added.
+  oneof confirmation {
+    string three_ds_result = 2;
+    WalletToken wallet_token = 3;
+  }
+
+  string idempotency_key = 10;
+}
+
+message ConfirmCheckoutResponse {
+  string intent_id = 1;
+  PaymentStatus status = 2;
+}
+
+message RefundPaymentRequest {
+  string intent_id = 1;
+
+  // amount is optional. When absent, the refund is a full refund. When
+  // present, it is a partial refund; the adapter validates it does not
+  // exceed the charged amount.
+  Money amount = 2;
+
+  string reason = 3;
+
+  string idempotency_key = 10;
+}
+
+message RefundPaymentResponse {
+  string refund_id = 1;
+  PaymentStatus status = 2;
+}
+
+// =============================================================================
+// Webhook messages
+// =============================================================================
+
+message ProcessWebhookRequest {
+  // gateway tells payments-core which adapter's signature verifier to use.
+  GatewayPreference gateway = 1;
+
+  // signature is the provider's signature header (e.g. Stripe-Signature).
+  string signature = 2;
+
+  // payload is the raw request body as received. Signature verification is
+  // sensitive to any whitespace or encoding change, so this MUST be the
+  // bytes that the HTTP receiver saw.
+  bytes payload = 3;
+
+  // received_at is the ingress timestamp; used for replay-window checks.
+  google.protobuf.Timestamp received_at = 4;
+
+  string idempotency_key = 10;
+}
+
+message ProcessWebhookResponse {
+  string event_id = 1;
+  bool accepted = 2;
+}
+
+// =============================================================================
+// Subscription messages
+// =============================================================================
+
+message CreateSubscriptionRequest {
+  string consumer = 1;
+  string customer_reference = 2;
+
+  // plan_id is an opaque identifier the caller has previously registered
+  // with payments-core (out of band for v1). It encodes cadence and amount.
+  string plan_id = 3;
+
+  GatewayPreference gateway = 4;
+  map<string, string> metadata = 5;
+
+  string idempotency_key = 10;
+}
+
+message CreateSubscriptionResponse {
+  string subscription_id = 1;
+  SubscriptionStatus status = 2;
+  GatewayPreference chosen_gateway = 3;
+}
+
+message SwitchSubscriptionRequest {
+  string subscription_id = 1;
+  string new_plan_id = 2;
+
+  // proration_behavior controls how mid-period changes are billed. Values
+  // are gateway-agnostic: "create_prorations", "none", "always_invoice".
+  string proration_behavior = 3;
+
+  string idempotency_key = 10;
+}
+
+message SwitchSubscriptionResponse {
+  string subscription_id = 1;
+  SubscriptionStatus status = 2;
+}
+
+message CancelSubscriptionRequest {
+  string subscription_id = 1;
+
+  // at_period_end = true schedules cancellation for the end of the billing
+  // cycle. false cancels immediately.
+  bool at_period_end = 2;
+
+  string reason = 3;
+
+  string idempotency_key = 10;
+}
+
+message CancelSubscriptionResponse {
+  string subscription_id = 1;
+  SubscriptionStatus status = 2;
+  google.protobuf.Timestamp effective_at = 3;
+}
+
+// =============================================================================
+// Escrow messages
+// =============================================================================
+
+message HoldEscrowRequest {
+  string consumer = 1;
+  string payer_reference = 2;
+  string payee_reference = 3;
+  Money amount = 4;
+
+  // release_after is a best-effort deadline. Some gateways auto-release; for
+  // gateways that do not, payments-core schedules the release.
+  google.protobuf.Timestamp release_after = 5;
+
+  GatewayPreference gateway = 6;
+  map<string, string> metadata = 7;
+
+  string idempotency_key = 10;
+}
+
+message HoldEscrowResponse {
+  string escrow_id = 1;
+  EscrowStatus status = 2;
+  GatewayPreference chosen_gateway = 3;
+}
+
+message ReleaseEscrowRequest {
+  string escrow_id = 1;
+
+  // amount is optional; omit to release the full held amount.
+  Money amount = 2;
+
+  string idempotency_key = 10;
+}
+
+message ReleaseEscrowResponse {
+  string escrow_id = 1;
+  EscrowStatus status = 2;
+}
+
+message DisputeEscrowRequest {
+  string escrow_id = 1;
+  string reason = 2;
+
+  // evidence is a list of caller-supplied URLs or document ids describing
+  // the dispute. Opaque to payments-core.
+  repeated string evidence = 3;
+
+  string idempotency_key = 10;
+}
+
+message DisputeEscrowResponse {
+  string escrow_id = 1;
+  string dispute_id = 2;
+  EscrowStatus status = 3;
+}
+
+// =============================================================================
+// Payout messages
+// =============================================================================
+
+message CreatePayoutRequest {
+  string consumer = 1;
+
+  // beneficiary_reference is the caller's identifier for the destination
+  // account. payments-core looks up the gateway-side record keyed to this
+  // reference (registered out of band for v1).
+  string beneficiary_reference = 2;
+
+  Money amount = 3;
+  string description = 4;
+  GatewayPreference gateway = 5;
+  map<string, string> metadata = 6;
+
+  string idempotency_key = 10;
+}
+
+message CreatePayoutResponse {
+  string payout_id = 1;
+  PayoutStatus status = 2;
+  GatewayPreference chosen_gateway = 3;
+}
+
+// =============================================================================
+// Agentic commerce messages
+// =============================================================================
+
+message InitiateAgenticPaymentRequest {
+  string consumer = 1;
+
+  // agent_id and tool_call_id form the audit trail that links this payment
+  // back to the LLM tool call that originated it.
+  string agent_id = 2;
+  string tool_call_id = 3;
+
+  // audit_jwt is a scoped JWT minted by agentic-core that proves the user
+  // consented to this payment under specific constraints (amount ceiling,
+  // merchant allowlist, expiry). payments-core verifies the JWT before
+  // charging.
+  string audit_jwt = 4;
+
+  string customer_reference = 5;
+  Money amount = 6;
+  string description = 7;
+  GatewayPreference gateway = 8;
+  map<string, string> metadata = 9;
+
+  string idempotency_key = 10;
+}
+
+message InitiateAgenticPaymentResponse {
+  string intent_id = 1;
+  PaymentStatus status = 2;
+  GatewayPreference chosen_gateway = 3;
+}
+
+// =============================================================================
+// Read messages
+// =============================================================================
+
+message GetPaymentHistoryRequest {
+  string consumer = 1;
+  string customer_reference = 2;
+
+  // Pagination. page_size defaults to 50 when zero; max 500.
+  int32 page_size = 3;
+  string page_token = 4;
+
+  // Optional time window filter. Both inclusive.
+  google.protobuf.Timestamp since = 5;
+  google.protobuf.Timestamp until = 6;
+}
+
+message PaymentHistoryItem {
+  string intent_id = 1;
+  PaymentStatus status = 2;
+  Money amount = 3;
+  GatewayPreference gateway = 4;
+  google.protobuf.Timestamp created_at = 5;
+  map<string, string> metadata = 6;
+}
+
+message GetPaymentHistoryResponse {
+  repeated PaymentHistoryItem items = 1;
+  string next_page_token = 2;
+}
+
+message ReconcileDailyRequest {
+  // date is the UTC calendar day to reconcile, formatted YYYY-MM-DD.
+  string date = 1;
+
+  // gateway scopes the reconciliation to one provider. UNSPECIFIED/AUTO
+  // means reconcile across all active gateways.
+  GatewayPreference gateway = 2;
+}
+
+message ReconciliationDiff {
+  // intent_id is present for discrepancies tied to a known local record;
+  // empty when the gateway has a ledger entry with no local counterpart.
+  string intent_id = 1;
+
+  // kind categorizes the discrepancy:
+  //   "missing_local"    — gateway has a charge we do not
+  //   "missing_gateway"  — local record with no gateway counterpart
+  //   "amount_mismatch"  — amounts diverge
+  //   "status_mismatch"  — statuses diverge
+  string kind = 2;
+
+  Money expected = 3;
+  Money actual = 4;
+  string description = 5;
+}
+
+message ReconcileDailyResponse {
+  string date = 1;
+  int32 matched_count = 2;
+  repeated ReconciliationDiff diffs = 3;
+}
