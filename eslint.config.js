@@ -155,4 +155,38 @@ export default [
       ],
     },
   },
+  {
+    // Inbound gRPC adapter guard — forbid cross-adapter contamination. The
+    // inbound adapter depends only on the domain, application, generated
+    // proto code, node built-ins, and @grpc/grpc-js. It must not reach into
+    // any outbound adapter (gateway adapters live in their own modules and
+    // are wired via the use-case container handed to `createServer`).
+    files: ['src/adapters/inbound/grpc/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['**/adapters/outbound/**'],
+              message:
+                'Inbound gRPC adapter must not depend on outbound adapters. Wire via the use-case container in main.ts.',
+            },
+            {
+              group: [
+                'stripe',
+                '@supabase/*',
+                'pg',
+                'node-fetch',
+                'axios',
+                'onvopay',
+              ],
+              message:
+                'Inbound gRPC adapter must not depend on gateway SDKs. Wire via ports only.',
+            },
+          ],
+        },
+      ],
+    },
+  },
 ];

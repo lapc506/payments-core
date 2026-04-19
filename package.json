@@ -11,10 +11,13 @@
     "node": ">=20.11"
   },
   "scripts": {
+    "prebuild": "pnpm proto:generate",
     "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/main.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier -w .",
+    "pretest": "pnpm proto:generate",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "clean": "rm -rf dist coverage",
@@ -22,9 +25,13 @@
     "proto:generate": "buf generate --template proto/buf.gen.yaml proto && mv -f openapi/payments_core.swagger.yaml openapi/payments_core.yaml",
     "proto:breaking": "buf breaking proto --against '.git#branch=main,subdir=proto'"
   },
+  "dependencies": {
+    "@bufbuild/protobuf": "^2.2.0",
+    "@grpc/grpc-js": "^1.12.0",
+    "pino": "^9.5.0"
+  },
   "devDependencies": {
     "@bufbuild/buf": "^1.45.0",
-    "@grpc/grpc-js": "^1.12.0",
     "@types/node": "^20.11.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",

@@ -1,0 +1,34 @@
+# Build cache / IDE
+node_modules
+dist
+coverage
+.git
+.github
+.vscode
+.idea
+.DS_Store
+
+# Claude Code artefacts
+.claude
+.claude/worktrees
+
+# Spec + docs (not needed at runtime)
+openspec
+docs
+*.md
+
+# Test files
+test
+**/*.test.ts
+**/*.spec.ts
+
+# Secrets / local env
+.env
+.env.*
+*.p12
+*.pem
+*.key
+
+# Generated proto is NOT excluded: we require the host to run
+# `pnpm proto:generate` before `docker build` so the build stage does not
+# need network access to buf.build. See Dockerfile comments.
