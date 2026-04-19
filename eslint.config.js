@@ -7,6 +7,10 @@
 // the domain layer must not depend on I/O libraries (`@grpc/*`, `stripe`,
 // `@supabase/*`, `pg`, `node-fetch`, `axios`, `onvopay`) nor on outer layers
 // (`../adapters/*`, `../application/*`, `../infrastructure/*`).
+//
+// A parallel rule on `src/application/**` forbids adapter imports and gateway
+// SDKs — the application layer depends on ports declared under
+// `src/domain/ports/` and on the domain entities via the `@/domain` barrel.
 import tsParser from '@typescript-eslint/parser';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 
@@ -73,6 +77,47 @@ export default [
             {
               group: ['**/adapters/**', '**/application/**', '**/infrastructure/**'],
               message: 'Domain must not depend on outer layers.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // Application purity guard — no adapter imports, no gateway-specific SDKs,
+    // no direct I/O libraries. The application layer consumes the domain via
+    // the `@/domain` barrel (`src/domain/index.ts`) and nothing else.
+    files: ['src/application/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: [
+                '@grpc/*',
+                'stripe',
+                '@supabase/*',
+                'pg',
+                'node-fetch',
+                'axios',
+                'onvopay',
+                'fs',
+                'node:fs',
+                'net',
+                'node:net',
+                'http',
+                'node:http',
+                'https',
+                'node:https',
+              ],
+              message:
+                'Application layer must not depend on I/O libraries or gateway SDKs. Use ports declared in src/domain/ports.',
+            },
+            {
+              group: ['**/adapters/**', '**/infrastructure/**'],
+              message:
+                'Application layer must not import from adapter or infrastructure layers. Depend on ports only.',
             },
           ],
         },
