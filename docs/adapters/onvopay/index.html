@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://lapc506.github.io/payments-core/docs/integrations/consumers/">
+        <link rel="canonical" href="https://lapc506.github.io/payments-core/docs/adapters/onvopay/">
       
       
         <link rel="prev" href="../">
       
       
-        <link rel="next" href="aduanext/">
+        <link rel="next" href="../../integrations/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Overview - payments-core</title>
+        <title>OnvoPay - payments-core</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#consumers" class="md-skip">
+        <a href="#onvopay-adapter" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Overview
+              OnvoPay
             
           </span>
         </div>
@@ -302,11 +302,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../adapters/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   
@@ -324,13 +326,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../integrations/" class="md-tabs__link">
           
   
   
@@ -627,6 +627,297 @@
       
   
   
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Adapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Adapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OnvoPay
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OnvoPay
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Environment variables
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-currencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported currencies
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Flows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#charge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Charge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subscription-recurring-charges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscription (recurring charges)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webhook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Webhook
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#endpoints-used-speculative-see-verification-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Endpoints used (speculative — see Verification Log)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error mapping
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known limitations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verification-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification log
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Verification log">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#open-todos-search-grep-r-todo-verify-in-the-adapter-tree" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open TODOs (search grep -R "TODO: verify" in the adapter tree)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
   
   
     
@@ -653,120 +944,11 @@
         
           
         
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../adapters/" class="md-nav__link ">
-              
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Adapters
-  
-
-    
-  </span>
-  
-  
-
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Adapters
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../adapters/onvopay/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    OnvoPay
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-    
-  
-  
-  
-    
-    
-      
-        
-          
-        
-      
-        
-      
-    
-    
-    
-      
-        
-        
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
-        
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../integrations/" class="md-nav__link ">
               
   
   
@@ -784,13 +966,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="">
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
@@ -807,8 +989,6 @@
                 
   
   
-    
-  
   
   
     
@@ -826,21 +1006,20 @@
       
       
         
-          
-          
-        
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_2" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_2" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="./" class="md-nav__link md-nav__link--active">
+            <a href="../../integrations/consumers/" class="md-nav__link ">
               
   
   
@@ -858,13 +1037,13 @@
             </a>
             
               
-              <label class="md-nav__link md-nav__link--active" for="__nav_6_2" id="__nav_6_2_label" tabindex="">
+              <label class="md-nav__link " for="__nav_6_2" id="__nav_6_2_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -884,7 +1063,7 @@
   
   
     <li class="md-nav__item">
-      <a href="aduanext/" class="md-nav__link">
+      <a href="../../integrations/consumers/aduanext/" class="md-nav__link">
         
   
   
@@ -1269,13 +1448,135 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#product-surfaces" class="md-nav__link">
+  <a href="#environment-variables" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Product surfaces
+        Environment variables
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-currencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported currencies
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Flows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#charge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Charge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#subscription-recurring-charges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subscription (recurring charges)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webhook" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Webhook
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#endpoints-used-speculative-see-verification-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Endpoints used (speculative — see Verification Log)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-mapping" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error mapping
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known limitations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verification-log" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification log
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Verification log">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#open-todos-search-grep-r-todo-verify-in-the-adapter-tree" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Open TODOs (search grep -R "TODO: verify" in the adapter tree)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1325,25 +1626,7 @@
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Integrations
-  </span>
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-    
-    
-      <li class="md-path__item">
-        <a href="./" class="md-path__link">
-          
-  <span class="md-ellipsis">
-    Consumers
+    Adapters
   </span>
 
         </a>
@@ -1362,7 +1645,7 @@
 
 
   
-    <a href="https://github.com/lapc506/payments-core/edit/main/docs/content/docs/integrations/consumers/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/lapc506/payments-core/edit/main/docs/content/docs/adapters/onvopay.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75z"/></svg>
     </a>
@@ -1371,33 +1654,295 @@
     
       
     
-    <a href="https://github.com/lapc506/payments-core/raw/main/docs/content/docs/integrations/consumers/index.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/lapc506/payments-core/raw/main/docs/content/docs/adapters/onvopay.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5"/></svg>
     </a>
   
 
 
-<h1 id="consumers">Consumers<a class="headerlink" href="#consumers" title="Permanent link">&para;</a></h1>
-<p>Consumer applications that speak the <code>payments-core</code> gRPC contract. Each gets
-a dedicated page once its integration lands. Until then they are listed here
-as plain-text references.</p>
-<h2 id="product-surfaces">Product surfaces<a class="headerlink" href="#product-surfaces" title="Permanent link">&para;</a></h2>
+<h1 id="onvopay-adapter">OnvoPay adapter<a class="headerlink" href="#onvopay-adapter" title="Permanent link">&para;</a></h1>
+<p>OnvoPay is a Costa-Rican payments gateway specialized in CR-local card
+acquisition. This adapter implements three ports from
+<code>src/domain/ports/index.ts</code>:</p>
 <ul>
-<li>dojo-os — learning platform; uses <code>payments-core</code> for tier upgrades, course
-  purchases, and creator payouts.</li>
-<li>altrupets — pet welfare marketplace; uses <code>payments-core</code> for donation
-  flows and marketplace settlements.</li>
-<li>habitanexus — real-estate connector; uses <code>payments-core</code> for deposit and
-  rental collection.</li>
-<li>vertivolatam — LATAM verticals umbrella; uses <code>payments-core</code> for
-  cross-vertical revenue consolidation.</li>
-<li>aduanext — customs compliance platform; uses <code>payments-core</code> for duty-fee
-  collection and agent payouts.</li>
+<li><code>PaymentGatewayPort</code> — card charges (initiate, confirm, capture, refund)</li>
+<li><code>SubscriptionPort</code> — recurring charges (<code>cargos-recurrentes</code>)</li>
+<li><code>WebhookVerifierPort</code> — HMAC-SHA256 webhook signature verification</li>
 </ul>
-<p>Each consumer page will document: which ports it exercises, which adapters
-it prefers per region, its idempotency strategy, and its failure-handling
-story.</p>
+<p>The adapter code lives in <code>src/adapters/outbound/gateways/onvopay/</code>. All
+network I/O funnels through a single <code>OnvoPayHttpClient</code> (in <code>client.ts</code>),
+which centralizes timeouts, retry policy, and auth headers. No other module
+in this adapter imports <code>node:http</code> or calls <code>fetch</code> directly.</p>
+<h2 id="environment-variables">Environment variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h2>
+<p>Configured via <code>.env</code> (see <code>.env.example</code> for the template):</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Required</th>
+<th>Default</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ONVOPAY_API_BASE_URL</code></td>
+<td>Yes</td>
+<td><code>https://api.onvopay.com</code></td>
+<td>Base URL; no trailing slash.</td>
+</tr>
+<tr>
+<td><code>ONVOPAY_API_KEY</code></td>
+<td>Yes</td>
+<td>—</td>
+<td>Secret API key from OnvoPay's dashboard.</td>
+</tr>
+<tr>
+<td><code>ONVOPAY_WEBHOOK_SIGNING_SECRET</code></td>
+<td>Yes</td>
+<td>—</td>
+<td>HMAC secret for webhook verification.</td>
+</tr>
+<tr>
+<td><code>ONVOPAY_TIMEOUT_MS</code></td>
+<td>No</td>
+<td><code>10000</code></td>
+<td>Per-request timeout.</td>
+</tr>
+<tr>
+<td><code>ONVOPAY_MAX_RETRIES</code></td>
+<td>No</td>
+<td><code>2</code></td>
+<td>Retries for transient network errors only.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="supported-currencies">Supported currencies<a class="headerlink" href="#supported-currencies" title="Permanent link">&para;</a></h2>
+<p><strong>CRC only at this time.</strong> The adapter enforces this at the gateway boundary
+via <code>assertOnvoPaySupportedCurrency()</code> in <code>mappers.ts</code>. Non-CRC <code>Money</code>
+inputs throw <code>InvalidMoneyError</code> before any network call, so consumers see
+a domain-level error rather than a gateway 400.</p>
+<p>OnvoPay may support USD or other currencies for specific merchant
+categories; see the Verification Log below for the open <code>TODO</code> on this.</p>
+<h2 id="flows">Flows<a class="headerlink" href="#flows" title="Permanent link">&para;</a></h2>
+<h3 id="charge">Charge<a class="headerlink" href="#charge" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>consumer                payments-core           OnvoPay
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    |  CreateCharge         |                      |
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    |----------------------&gt;|                      |
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    |                       | POST /v1/charges     |
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    |                       |---------------------&gt;|
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    |                       |&lt;---------------------|
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    |                       |   { id, status }     |
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    |&lt;----------------------|                      |
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    |   gatewayRef +        |                      |
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    |   requiresAction?     |                      |
+</span></code></pre></div>
+<p>If <code>status === 'requires_action'</code>, the adapter returns a <code>ThreeDSChallenge</code>
+whose opaque payload carries the redirect URL (<code>next_action.redirect_url</code>
+or <code>checkout_url</code>). Consumers surface the hosted 3DS page; on return, the
+use case layer calls <code>confirm(...)</code>.</p>
+<h3 id="subscription-recurring-charges">Subscription (recurring charges)<a class="headerlink" href="#subscription-recurring-charges" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>POST /v1/subscriptions        { customer, plan, metadata }
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>PATCH /v1/subscriptions/:id   { plan, proration_behavior }   // switch
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>DELETE /v1/subscriptions/:id                                 // cancel now
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>POST /v1/subscriptions/:id/cancel { at_period_end: true }    // cancel at period end
+</span></code></pre></div>
+<p>Prorate previews are not yet implemented — the <code>prorate(...)</code> method throws
+<code>ADAPTER_ONVOPAY_NOT_IMPLEMENTED</code> pending a verified preview endpoint.</p>
+<h3 id="webhook">Webhook<a class="headerlink" href="#webhook" title="Permanent link">&para;</a></h3>
+<p>The verifier expects <code>HMAC-SHA256(raw_body, webhook_signing_secret)</code>
+returned as a lowercase hex digest. Both the bare-hex header shape and the
+composite <code>t=&lt;unix&gt;,v1=&lt;hex&gt;</code> shape are accepted.</p>
+<p>The verifier:</p>
+<ol>
+<li>Rejects missing / malformed / wrong-length signatures <strong>before</strong> parsing
+   the body.</li>
+<li>Parses the JSON body only after HMAC verification.</li>
+<li>Rejects duplicate event ids via a pluggable <code>OnvoPayWebhookDedupeStore</code>.
+   Tests use <code>InMemoryOnvoPayDedupeStore</code>; production must inject a
+   Redis/Postgres-backed implementation.</li>
+</ol>
+<h2 id="endpoints-used-speculative-see-verification-log">Endpoints used (speculative — see Verification Log)<a class="headerlink" href="#endpoints-used-speculative-see-verification-log" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Port method</th>
+<th>HTTP verb</th>
+<th>Path</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PaymentGatewayPort.initiate</code></td>
+<td>POST</td>
+<td><code>/v1/charges</code></td>
+</tr>
+<tr>
+<td><code>PaymentGatewayPort.confirm</code></td>
+<td>POST</td>
+<td><code>/v1/charges/:id/confirm</code></td>
+</tr>
+<tr>
+<td><code>PaymentGatewayPort.capture</code></td>
+<td>POST</td>
+<td><code>/v1/charges/:id/capture</code></td>
+</tr>
+<tr>
+<td><code>PaymentGatewayPort.refund</code></td>
+<td>POST</td>
+<td><code>/v1/refunds</code></td>
+</tr>
+<tr>
+<td><code>SubscriptionPort.create</code></td>
+<td>POST</td>
+<td><code>/v1/subscriptions</code></td>
+</tr>
+<tr>
+<td><code>SubscriptionPort.switch</code></td>
+<td>PATCH</td>
+<td><code>/v1/subscriptions/:id</code></td>
+</tr>
+<tr>
+<td><code>SubscriptionPort.cancel</code> (immediate)</td>
+<td>DELETE</td>
+<td><code>/v1/subscriptions/:id</code></td>
+</tr>
+<tr>
+<td><code>SubscriptionPort.cancel</code> (at period end)</td>
+<td>POST</td>
+<td><code>/v1/subscriptions/:id/cancel</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="error-mapping">Error mapping<a class="headerlink" href="#error-mapping" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Trigger</th>
+<th>Mapped error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTTP 401 / 403</td>
+<td><code>OnvoPayAuthError</code></td>
+</tr>
+<tr>
+<td>HTTP 402</td>
+<td><code>OnvoPayCardDeclinedError</code></td>
+</tr>
+<tr>
+<td>HTTP 400 / 422</td>
+<td><code>OnvoPayInvalidRequestError</code></td>
+</tr>
+<tr>
+<td>HTTP 409</td>
+<td><code>IdempotencyConflictError</code> (domain)</td>
+</tr>
+<tr>
+<td>HTTP 429</td>
+<td><code>OnvoPayRateLimitedError</code></td>
+</tr>
+<tr>
+<td>HTTP 5xx</td>
+<td><code>GatewayUnavailableError</code> (domain)</td>
+</tr>
+<tr>
+<td>Network timeout / reset</td>
+<td><code>GatewayUnavailableError</code> (domain)</td>
+</tr>
+</tbody>
+</table>
+<p>Business errors (4xx, 5xx) are <strong>never retried</strong> inside the client. Only
+transient network failures are retried, with exponential backoff + jitter,
+up to <code>ONVOPAY_MAX_RETRIES</code> attempts.</p>
+<h2 id="known-limitations">Known limitations<a class="headerlink" href="#known-limitations" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>CRC only.</strong> See Verification Log for the open TODO on multi-currency.</li>
+<li><strong><code>prorate</code> not implemented.</strong> Pending a verified preview endpoint.</li>
+<li><strong>Escrow / disputes not implemented.</strong> The <code>EscrowPort</code> and <code>DisputePort</code>
+  will land in a follow-up change (<code>onvopay-adapter-p1</code>).</li>
+<li><strong>Minor-unit convention for CRC is unverified.</strong> The adapter passes
+  <code>Money.amountMinor</code> through as an integer; if OnvoPay expects whole
+  Colones, the conversion lives in <code>toOnvoPayAmount()</code> and can be changed
+  without touching port implementations.</li>
+</ul>
+<h2 id="verification-log">Verification log<a class="headerlink" href="#verification-log" title="Permanent link">&para;</a></h2>
+<p>This adapter was implemented with <code>docs.onvopay.com</code> as a JavaScript-heavy
+SPA that did not render markdown-friendly content via <code>curl</code>. Because of
+that, every endpoint shape, field name, error code, and webhook
+convention below should be validated against a live OnvoPay sandbox before
+the adapter is routed production traffic.</p>
+<ul>
+<li><strong>Baseline commit SHA</strong>: <code>b359371d9468f04bac84c7f971037b60acf66029</code>
+  (the tip of <code>main</code> at which this adapter was authored).</li>
+<li><strong>Docs referenced but not verifiable via plaintext fetch</strong>:</li>
+<li><a href="https://docs.onvopay.com/#section/Referencia-API">https://docs.onvopay.com/#section/Referencia-API</a> — base URL, auth,
+    idempotency header, charge endpoints, error body shape.</li>
+<li><a href="https://docs.onvopay.com/#tag/Cargos-recurrentes">https://docs.onvopay.com/#tag/Cargos-recurrentes</a> — subscription
+    endpoints, proration-behavior enum, cancel-at-period-end flag.</li>
+<li>Webhook section (URL not bookmarkable from outside the SPA) —
+    signature algorithm, header name, header shape.</li>
+</ul>
+<h3 id="open-todos-search-grep-r-todo-verify-in-the-adapter-tree">Open TODOs (search <code>grep -R "TODO: verify"</code> in the adapter tree)<a class="headerlink" href="#open-todos-search-grep-r-todo-verify-in-the-adapter-tree" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>What to verify</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>client.ts</code> (Bearer header)</td>
+<td>Auth scheme — Bearer vs <code>x-api-key</code> vs Basic.</td>
+</tr>
+<tr>
+<td><code>client.ts</code> (Idempotency-Key header)</td>
+<td>Exact header name OnvoPay expects.</td>
+</tr>
+<tr>
+<td><code>mappers.ts</code> (CRC-only guard)</td>
+<td>Whether USD / EUR are supported.</td>
+</tr>
+<tr>
+<td><code>mappers.ts</code> (<code>toOnvoPayAmount</code>)</td>
+<td>Minor-unit convention for CRC.</td>
+</tr>
+<tr>
+<td><code>mappers.ts</code> (status enums)</td>
+<td>Complete charge and subscription status sets.</td>
+</tr>
+<tr>
+<td><code>payment-gateway.ts</code> (<code>/v1/charges/:id/confirm</code>)</td>
+<td>Endpoint path for confirmation.</td>
+</tr>
+<tr>
+<td><code>subscription.ts</code> (<code>proration_behavior</code>)</td>
+<td>Enum accepted by the switch endpoint.</td>
+</tr>
+<tr>
+<td><code>subscription.ts</code> (<code>prorate</code>)</td>
+<td>Preview endpoint path and response shape.</td>
+</tr>
+<tr>
+<td><code>subscription.ts</code> (<code>cancel</code> effectiveAt)</td>
+<td>Whether the payload returns <code>cancel_at</code>.</td>
+</tr>
+<tr>
+<td><code>webhook-verifier.ts</code> (signature scheme)</td>
+<td>HMAC algorithm + header name.</td>
+</tr>
+<tr>
+<td><code>errors.ts</code> (HTTP 402 mapping)</td>
+<td>Whether 402 or 400+code is used for declines.</td>
+</tr>
+</tbody>
+</table>
+<p>Each TODO in code links back to a specific <code>docs.onvopay.com</code> section. The
+follow-up work is tracked as a docs-verification issue (link in the PR
+description).</p>
 
 
 
