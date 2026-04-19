@@ -11,10 +11,10 @@
 //   - DELETE  /v1/subscriptions/:id                  cancel (immediate)
 //   - POST    /v1/subscriptions/:id/cancel           cancel-at-period-end flag
 //
-// `prorate` is a best-effort computation: OnvoPay may not expose a
-// dedicated proration preview endpoint. If not available, the method falls
-// back to returning the current + new plan amounts as the next-cycle figure
-// and documents the limitation in docs/content/docs/adapters/onvopay.md.
+// `prorate` is not implemented in this change: OnvoPay's proration preview
+// endpoint has not been verified against live docs and we refuse to return
+// fabricated numbers. The method throws ADAPTER_ONVOPAY_NOT_IMPLEMENTED;
+// see docs/content/docs/adapters/onvopay.md for the follow-up.
 // =============================================================================
 
 import type {
@@ -29,7 +29,6 @@ import type {
   SwitchSubscriptionResult,
 } from '../../../../domain/ports/index.js';
 import { DomainError } from '../../../../domain/errors.js';
-import { Money } from '../../../../domain/value_objects/money.js';
 
 import { mapOnvoPayError } from './errors.js';
 import {
@@ -142,10 +141,6 @@ export class OnvoPaySubscriptionGateway implements SubscriptionPort {
     // amounts via Money.of(BigInt(amount), currency), and return. Keep the
     // bigint / JSON-number boundary tight: the parse path is the only place
     // the adapter converts OnvoPay JSON numbers back into bigints.
-    //
-    // Referencing Money here keeps the domain import in the source graph so
-    // the future implementation can consume the type without additional imports.
-    void Money;
     throw new DomainError(
       'ADAPTER_ONVOPAY_NOT_IMPLEMENTED',
       'prorate is not implemented for OnvoPay; see onvopay-adapter-p0 follow-ups.',

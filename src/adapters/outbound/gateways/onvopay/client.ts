@@ -131,7 +131,11 @@ export class OnvoPayHttpClient {
     this.apiKey = config.apiKey;
     this.timeoutMs = config.timeoutMs ?? DEFAULT_TIMEOUT_MS;
     this.maxRetries = config.maxRetries ?? DEFAULT_MAX_RETRIES;
-    this.fetchImpl = config.fetchImpl ?? fetch;
+    // Bind fetch to globalThis so the method retains its default receiver
+    // when called via `this.fetchImpl(...)`. Native fetch tolerates any
+    // receiver today, but this guards against future spec tightening and
+    // against custom fetchImpls that expect a specific `this`.
+    this.fetchImpl = config.fetchImpl ?? fetch.bind(globalThis);
   }
 
   async request<T>(req: OnvoPayRequest): Promise<T> {

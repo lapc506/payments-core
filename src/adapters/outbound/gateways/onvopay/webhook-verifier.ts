@@ -61,6 +61,15 @@ export class WebhookDuplicateEventError extends DomainError {
  * Pluggable dedupe store. A production implementation persists seen event
  * ids for the gateway-documented retention window (OnvoPay's is not
  * published at time of writing — TODO: verify — use 24h as a baseline).
+ *
+ * The verifier marks an event as seen IMMEDIATELY after a successful
+ * signature check. That is intentionally aggressive — it prevents attackers
+ * from replaying a captured webhook to force side effects during the window
+ * where the application layer is still processing the first delivery. The
+ * application-layer `ProcessWebhook` use case also has its own idempotency
+ * check (on `eventId` AND on the request's `idempotencyKey`), so a
+ * legitimate gateway retry after a transient processing failure is absorbed
+ * at that layer rather than here.
  */
 export interface OnvoPayWebhookDedupeStore {
   /** Returns true if `eventId` has been marked seen previously. */
