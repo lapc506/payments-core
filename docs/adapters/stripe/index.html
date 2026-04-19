@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://lapc506.github.io/payments-core/docs/adapters/onvopay/">
+        <link rel="canonical" href="https://lapc506.github.io/payments-core/docs/adapters/stripe/">
       
       
-        <link rel="prev" href="../stripe/">
+        <link rel="prev" href="../">
       
       
-        <link rel="next" href="../../integrations/">
+        <link rel="next" href="../onvopay/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>OnvoPay - payments-core</title>
+        <title>Stripe - payments-core</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#onvopay-adapter" class="md-skip">
+        <a href="#stripe-adapter" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              OnvoPay
+              Stripe
             
           </span>
         </div>
@@ -703,34 +703,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../stripe/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Stripe
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -750,7 +722,7 @@
   <span class="md-ellipsis">
     
   
-    OnvoPay
+    Stripe
   
 
     
@@ -768,7 +740,7 @@
   <span class="md-ellipsis">
     
   
-    OnvoPay
+    Stripe
   
 
     
@@ -796,6 +768,39 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#implemented-ports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implemented ports
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sdk-version-pin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SDK version pin
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#factory-pattern-doj-3287" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Factory pattern (DOJ-3287)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#environment-variables" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -807,10 +812,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#supported-currencies" class="md-nav__link">
+  <a href="#idempotency" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Supported currencies
+        Idempotency
       
     </span>
   </a>
@@ -818,60 +823,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#flows" class="md-nav__link">
+  <a href="#webhook-verification" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Flows
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Flows">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#charge" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Charge
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#subscription-recurring-charges" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Subscription (recurring charges)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#webhook" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Webhook
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#endpoints-used-speculative-see-verification-log" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Endpoints used (speculative — see Verification Log)
+        Webhook verification
       
     </span>
   </a>
@@ -879,10 +834,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-mapping" class="md-nav__link">
+  <a href="#supported-flows" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Error mapping
+        Supported flows
       
     </span>
   </a>
@@ -890,10 +845,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#known-limitations" class="md-nav__link">
+  <a href="#known-limitations-p0-scope" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Known limitations
+        Known limitations (P0 scope)
       
     </span>
   </a>
@@ -901,30 +856,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#verification-log" class="md-nav__link">
+  <a href="#migration-note-for-dojo-os" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Verification log
+        Migration note for dojo-os
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Verification log">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#open-todos-search-grep-r-todo-verify-in-the-adapter-tree" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Open TODOs (search grep -R "TODO: verify" in the adapter tree)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -932,6 +870,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../onvopay/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OnvoPay
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1478,6 +1444,39 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#implemented-ports" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implemented ports
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sdk-version-pin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SDK version pin
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#factory-pattern-doj-3287" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Factory pattern (DOJ-3287)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#environment-variables" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1489,10 +1488,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#supported-currencies" class="md-nav__link">
+  <a href="#idempotency" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Supported currencies
+        Idempotency
       
     </span>
   </a>
@@ -1500,60 +1499,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#flows" class="md-nav__link">
+  <a href="#webhook-verification" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Flows
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Flows">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#charge" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Charge
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#subscription-recurring-charges" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Subscription (recurring charges)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#webhook" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Webhook
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#endpoints-used-speculative-see-verification-log" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Endpoints used (speculative — see Verification Log)
+        Webhook verification
       
     </span>
   </a>
@@ -1561,10 +1510,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-mapping" class="md-nav__link">
+  <a href="#supported-flows" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Error mapping
+        Supported flows
       
     </span>
   </a>
@@ -1572,10 +1521,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#known-limitations" class="md-nav__link">
+  <a href="#known-limitations-p0-scope" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Known limitations
+        Known limitations (P0 scope)
       
     </span>
   </a>
@@ -1583,30 +1532,13 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#verification-log" class="md-nav__link">
+  <a href="#migration-note-for-dojo-os" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Verification log
+        Migration note for dojo-os
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Verification log">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#open-todos-search-grep-r-todo-verify-in-the-adapter-tree" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Open TODOs (search grep -R "TODO: verify" in the adapter tree)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1675,7 +1607,7 @@
 
 
   
-    <a href="https://github.com/lapc506/payments-core/edit/main/docs/content/docs/adapters/onvopay.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/lapc506/payments-core/edit/main/docs/content/docs/adapters/stripe.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75z"/></svg>
     </a>
@@ -1684,295 +1616,172 @@
     
       
     
-    <a href="https://github.com/lapc506/payments-core/raw/main/docs/content/docs/adapters/onvopay.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/lapc506/payments-core/raw/main/docs/content/docs/adapters/stripe.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5"/></svg>
     </a>
   
 
 
-<h1 id="onvopay-adapter">OnvoPay adapter<a class="headerlink" href="#onvopay-adapter" title="Permanent link">&para;</a></h1>
-<p>OnvoPay is a Costa-Rican payments gateway specialized in CR-local card
-acquisition. This adapter implements three ports from
-<code>src/domain/ports/index.ts</code>:</p>
-<ul>
-<li><code>PaymentGatewayPort</code> — card charges (initiate, confirm, capture, refund)</li>
-<li><code>SubscriptionPort</code> — recurring charges (<code>cargos-recurrentes</code>)</li>
-<li><code>WebhookVerifierPort</code> — HMAC-SHA256 webhook signature verification</li>
-</ul>
-<p>The adapter code lives in <code>src/adapters/outbound/gateways/onvopay/</code>. All
-network I/O funnels through a single <code>OnvoPayHttpClient</code> (in <code>client.ts</code>),
-which centralizes timeouts, retry policy, and auth headers. No other module
-in this adapter imports <code>node:http</code> or calls <code>fetch</code> directly.</p>
+<h1 id="stripe-adapter">Stripe adapter<a class="headerlink" href="#stripe-adapter" title="Permanent link">&para;</a></h1>
+<p>Stripe is the first gateway adapter landed in <code>payments-core</code>. It implements
+three domain ports against Stripe's REST API via the official Node SDK, and is
+the reference implementation every subsequent adapter (<code>OnvoPay</code>, <code>TiloPay</code>,
+<code>dLocal</code>, ...) mirrors.</p>
+<h2 id="implemented-ports">Implemented ports<a class="headerlink" href="#implemented-ports" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>What it talks to</th>
+<th>Methods</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PaymentGatewayPort</code></td>
+<td>Stripe PaymentIntents + Refunds</td>
+<td><code>initiate</code>, <code>confirm</code>, <code>capture</code>, <code>refund</code></td>
+</tr>
+<tr>
+<td><code>SubscriptionPort</code></td>
+<td>Stripe Billing</td>
+<td><code>create</code>, <code>switch</code>, <code>cancel</code>, <code>prorate</code></td>
+</tr>
+<tr>
+<td><code>WebhookVerifierPort</code></td>
+<td><code>stripe.webhooks.constructEvent</code></td>
+<td><code>verify</code></td>
+</tr>
+</tbody>
+</table>
+<p>Two more Stripe-backed ports (<code>PayoutPort</code>, <code>ReconciliationPort</code>,
+<code>DisputePort</code>) live in the OpenSpec tasks for this change but are deferred to
+follow-up work once the domain ports they need are also finalized. See the
+<code>openspec/changes/stripe-adapter-p0/</code> folder for the full roadmap.</p>
+<h2 id="sdk-version-pin">SDK version pin<a class="headerlink" href="#sdk-version-pin" title="Permanent link">&para;</a></h2>
+<p><strong><code>stripe@18.5.0</code></strong> — exact version, no caret, no tilde. The same version the
+sibling <code>dojo-os</code> repo runs in production post
+<a href="https://linear.app/dojo-coding/issue/DOJ-3287">DOJ-3287</a> (sibling-repo
+internal). Avoiding drift across the portfolio is a governance rule; never
+bump this line without a dedicated OpenSpec change.</p>
+<p><code>STRIPE_API_VERSION</code> is pinned separately to <code>'2025-08-27.basil'</code> — the
+<code>Stripe.LatestApiVersion</code> string shipped with SDK 18.5.0. Treat this as a
+second pin with the same upgrade discipline as the SDK version.</p>
+<h2 id="factory-pattern-doj-3287">Factory pattern (DOJ-3287)<a class="headerlink" href="#factory-pattern-doj-3287" title="Permanent link">&para;</a></h2>
+<p>The entire adapter has exactly <strong>one</strong> <code>new Stripe(...)</code> call — inside
+<code>src/adapters/outbound/gateways/stripe/client.ts</code>. Every other file imports
+the Stripe-typed surface from <code>./client.js</code>. An ESLint rule
+(<code>no-restricted-imports</code> scoped to the adapter directory) enforces this, with
+a second <code>no-restricted-syntax</code> guard forbidding <code>new Stripe(...)</code> anywhere
+else in <code>src/</code>.</p>
+<p>This layout makes SDK upgrades a <strong>one-file</strong> change and keeps the adapter
+free of surprise retries, timeouts, or <code>apiVersion</code> drift.</p>
 <h2 id="environment-variables">Environment variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h2>
-<p>Configured via <code>.env</code> (see <code>.env.example</code> for the template):</p>
 <table>
 <thead>
 <tr>
 <th>Variable</th>
 <th>Required</th>
-<th>Default</th>
-<th>Purpose</th>
+<th>Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>ONVOPAY_API_BASE_URL</code></td>
-<td>Yes</td>
-<td><code>https://api.onvopay.com</code></td>
-<td>Base URL; no trailing slash.</td>
+<td><code>STRIPE_SECRET_KEY</code></td>
+<td>Yes (runtime)</td>
+<td><code>sk_live_*</code> or <code>sk_test_*</code>. Never commit.</td>
 </tr>
 <tr>
-<td><code>ONVOPAY_API_KEY</code></td>
-<td>Yes</td>
-<td>—</td>
-<td>Secret API key from OnvoPay's dashboard.</td>
+<td><code>STRIPE_WEBHOOK_SIGNING_SECRET</code></td>
+<td>Yes (runtime)</td>
+<td><code>whsec_*</code>. Issued per endpoint in Stripe dashboard.</td>
 </tr>
 <tr>
-<td><code>ONVOPAY_WEBHOOK_SIGNING_SECRET</code></td>
-<td>Yes</td>
-<td>—</td>
-<td>HMAC secret for webhook verification.</td>
-</tr>
-<tr>
-<td><code>ONVOPAY_TIMEOUT_MS</code></td>
+<td><code>STRIPE_API_VERSION</code></td>
 <td>No</td>
-<td><code>10000</code></td>
-<td>Per-request timeout.</td>
+<td>Override only if explicitly different from the pinned version.</td>
 </tr>
 <tr>
-<td><code>ONVOPAY_MAX_RETRIES</code></td>
+<td><code>STRIPE_MAX_NETWORK_RETRIES</code></td>
 <td>No</td>
-<td><code>2</code></td>
-<td>Retries for transient network errors only.</td>
+<td>Defaults to 2.</td>
+</tr>
+<tr>
+<td><code>STRIPE_TIMEOUT_MS</code></td>
+<td>No</td>
+<td>Defaults to 15_000.</td>
 </tr>
 </tbody>
 </table>
-<h2 id="supported-currencies">Supported currencies<a class="headerlink" href="#supported-currencies" title="Permanent link">&para;</a></h2>
-<p><strong>CRC only at this time.</strong> The adapter enforces this at the gateway boundary
-via <code>assertOnvoPaySupportedCurrency()</code> in <code>mappers.ts</code>. Non-CRC <code>Money</code>
-inputs throw <code>InvalidMoneyError</code> before any network call, so consumers see
-a domain-level error rather than a gateway 400.</p>
-<p>OnvoPay may support USD or other currencies for specific merchant
-categories; see the Verification Log below for the open <code>TODO</code> on this.</p>
-<h2 id="flows">Flows<a class="headerlink" href="#flows" title="Permanent link">&para;</a></h2>
-<h3 id="charge">Charge<a class="headerlink" href="#charge" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>consumer                payments-core           OnvoPay
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    |  CreateCharge         |                      |
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    |----------------------&gt;|                      |
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    |                       | POST /v1/charges     |
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    |                       |---------------------&gt;|
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    |                       |&lt;---------------------|
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    |                       |   { id, status }     |
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    |&lt;----------------------|                      |
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    |   gatewayRef +        |                      |
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    |   requiresAction?     |                      |
-</span></code></pre></div>
-<p>If <code>status === 'requires_action'</code>, the adapter returns a <code>ThreeDSChallenge</code>
-whose opaque payload carries the redirect URL (<code>next_action.redirect_url</code>
-or <code>checkout_url</code>). Consumers surface the hosted 3DS page; on return, the
-use case layer calls <code>confirm(...)</code>.</p>
-<h3 id="subscription-recurring-charges">Subscription (recurring charges)<a class="headerlink" href="#subscription-recurring-charges" title="Permanent link">&para;</a></h3>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>POST /v1/subscriptions        { customer, plan, metadata }
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>PATCH /v1/subscriptions/:id   { plan, proration_behavior }   // switch
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>DELETE /v1/subscriptions/:id                                 // cancel now
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>POST /v1/subscriptions/:id/cancel { at_period_end: true }    // cancel at period end
-</span></code></pre></div>
-<p>Prorate previews are not yet implemented — the <code>prorate(...)</code> method throws
-<code>ADAPTER_ONVOPAY_NOT_IMPLEMENTED</code> pending a verified preview endpoint.</p>
-<h3 id="webhook">Webhook<a class="headerlink" href="#webhook" title="Permanent link">&para;</a></h3>
-<p>The verifier expects <code>HMAC-SHA256(raw_body, webhook_signing_secret)</code>
-returned as a lowercase hex digest. Both the bare-hex header shape and the
-composite <code>t=&lt;unix&gt;,v1=&lt;hex&gt;</code> shape are accepted.</p>
-<p>The verifier:</p>
+<p>The composition root (landing with the gRPC inbound change) validates these
+via Zod and fails fast if the secret/signing keys are missing.</p>
+<h2 id="idempotency">Idempotency<a class="headerlink" href="#idempotency" title="Permanent link">&para;</a></h2>
+<p>Every mutating call threads the domain <code>IdempotencyKey</code> through Stripe's
+native <code>Idempotency-Key</code> header (SDK option <code>idempotencyKey</code>). Stripe's
+semantics match our domain contract:</p>
+<ul>
+<li><strong>Replays return the original response</strong> — safe to retry on network
+  failure.</li>
+<li><strong>Parameter changes on replay</strong> fire <code>StripeIdempotencyError</code>, which the
+  adapter's error mapper converts to <code>IdempotencyConflictError</code> (gRPC
+  <code>ALREADY_EXISTS</code>).</li>
+</ul>
+<p>No semantic deviation to flag at this point. If Stripe ever tightens the
+policy (e.g. requires the key be globally unique across endpoints), the
+adapter's mapper is the single place to adjust.</p>
+<h2 id="webhook-verification">Webhook verification<a class="headerlink" href="#webhook-verification" title="Permanent link">&para;</a></h2>
+<p><code>StripeWebhookVerifier.verify(...)</code> wraps <code>client.webhooks.constructEvent</code>
+around the <strong>raw bytes</strong> of the webhook body. Two guarantees:</p>
 <ol>
-<li>Rejects missing / malformed / wrong-length signatures <strong>before</strong> parsing
-   the body.</li>
-<li>Parses the JSON body only after HMAC verification.</li>
-<li>Rejects duplicate event ids via a pluggable <code>OnvoPayWebhookDedupeStore</code>.
-   Tests use <code>InMemoryOnvoPayDedupeStore</code>; production must inject a
-   Redis/Postgres-backed implementation.</li>
+<li><strong>Signature check</strong>: Stripe-signed HMAC. Tolerance defaults to 5 minutes
+   (the SDK default). Mismatches throw <code>WebhookSignatureError</code> (gRPC
+   <code>UNAUTHENTICATED</code>).</li>
+<li><strong>Duplicate-event rejection</strong>: event <code>evt_*</code> ids are stable across
+   redeliveries. The verifier re-uses the application-layer <code>IdempotencyPort</code>
+   as a short-term event repository. This is an intentional shortcut — a
+   follow-up change introduces <code>WebhookEventRepositoryPort</code> (or a dedicated
+   <code>stripe_events</code> table) and migrates this dependency without breaking
+   the public verifier contract.</li>
 </ol>
-<h2 id="endpoints-used-speculative-see-verification-log">Endpoints used (speculative — see Verification Log)<a class="headerlink" href="#endpoints-used-speculative-see-verification-log" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Port method</th>
-<th>HTTP verb</th>
-<th>Path</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>PaymentGatewayPort.initiate</code></td>
-<td>POST</td>
-<td><code>/v1/charges</code></td>
-</tr>
-<tr>
-<td><code>PaymentGatewayPort.confirm</code></td>
-<td>POST</td>
-<td><code>/v1/charges/:id/confirm</code></td>
-</tr>
-<tr>
-<td><code>PaymentGatewayPort.capture</code></td>
-<td>POST</td>
-<td><code>/v1/charges/:id/capture</code></td>
-</tr>
-<tr>
-<td><code>PaymentGatewayPort.refund</code></td>
-<td>POST</td>
-<td><code>/v1/refunds</code></td>
-</tr>
-<tr>
-<td><code>SubscriptionPort.create</code></td>
-<td>POST</td>
-<td><code>/v1/subscriptions</code></td>
-</tr>
-<tr>
-<td><code>SubscriptionPort.switch</code></td>
-<td>PATCH</td>
-<td><code>/v1/subscriptions/:id</code></td>
-</tr>
-<tr>
-<td><code>SubscriptionPort.cancel</code> (immediate)</td>
-<td>DELETE</td>
-<td><code>/v1/subscriptions/:id</code></td>
-</tr>
-<tr>
-<td><code>SubscriptionPort.cancel</code> (at period end)</td>
-<td>POST</td>
-<td><code>/v1/subscriptions/:id/cancel</code></td>
-</tr>
-</tbody>
-</table>
-<h2 id="error-mapping">Error mapping<a class="headerlink" href="#error-mapping" title="Permanent link">&para;</a></h2>
-<table>
-<thead>
-<tr>
-<th>Trigger</th>
-<th>Mapped error</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>HTTP 401 / 403</td>
-<td><code>OnvoPayAuthError</code></td>
-</tr>
-<tr>
-<td>HTTP 402</td>
-<td><code>OnvoPayCardDeclinedError</code></td>
-</tr>
-<tr>
-<td>HTTP 400 / 422</td>
-<td><code>OnvoPayInvalidRequestError</code></td>
-</tr>
-<tr>
-<td>HTTP 409</td>
-<td><code>IdempotencyConflictError</code> (domain)</td>
-</tr>
-<tr>
-<td>HTTP 429</td>
-<td><code>OnvoPayRateLimitedError</code></td>
-</tr>
-<tr>
-<td>HTTP 5xx</td>
-<td><code>GatewayUnavailableError</code> (domain)</td>
-</tr>
-<tr>
-<td>Network timeout / reset</td>
-<td><code>GatewayUnavailableError</code> (domain)</td>
-</tr>
-</tbody>
-</table>
-<p>Business errors (4xx, 5xx) are <strong>never retried</strong> inside the client. Only
-transient network failures are retried, with exponential backoff + jitter,
-up to <code>ONVOPAY_MAX_RETRIES</code> attempts.</p>
-<h2 id="known-limitations">Known limitations<a class="headerlink" href="#known-limitations" title="Permanent link">&para;</a></h2>
+<p>Do <strong>not</strong> JSON-parse the body before verification. The inbound gRPC adapter
+preserves the raw bytes on <code>ProcessWebhookRequest.raw_body</code> for this reason.</p>
+<h2 id="supported-flows">Supported flows<a class="headerlink" href="#supported-flows" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>CRC only.</strong> See Verification Log for the open TODO on multi-currency.</li>
-<li><strong><code>prorate</code> not implemented.</strong> Pending a verified preview endpoint.</li>
-<li><strong>Escrow / disputes not implemented.</strong> The <code>EscrowPort</code> and <code>DisputePort</code>
-  will land in a follow-up change (<code>onvopay-adapter-p1</code>).</li>
-<li><strong>Minor-unit convention for CRC is unverified.</strong> The adapter passes
-  <code>Money.amountMinor</code> through as an integer; if OnvoPay expects whole
-  Colones, the conversion lives in <code>toOnvoPayAmount()</code> and can be changed
-  without touching port implementations.</li>
+<li><strong>Card charge with automatic capture</strong> — <code>initiate</code> returns a
+  <code>PaymentIntent</code>, 3DS step-up surfaced via <code>ThreeDSChallenge</code>
+  (carrying the <code>client_secret</code> as opaque bytes). Frontend SDKs
+  (<code>@stripe/stripe-js</code>, <code>flutter_stripe</code>) complete the step-up.</li>
+<li><strong>Authorize + capture</strong> — <code>capture</code> supports partial captures via the
+  optional <code>amount</code> field.</li>
+<li><strong>Refund</strong> — full or partial, carrying a <code>reason</code> as metadata.</li>
+<li><strong>Subscriptions</strong> — Stripe Billing with <code>price_*</code> plan ids. Requires
+  <code>metadata.customer_id</code> on <code>create</code> (pre-created Stripe customer id).</li>
+<li><strong>Plan switch</strong> — proration behaviour passes through directly.</li>
+<li><strong>Cancel immediately or at period end</strong> — <code>effectiveAt</code> surfaced from
+  <code>canceled_at</code> or the active item's <code>current_period_end</code> respectively.</li>
 </ul>
-<h2 id="verification-log">Verification log<a class="headerlink" href="#verification-log" title="Permanent link">&para;</a></h2>
-<p>This adapter was implemented with <code>docs.onvopay.com</code> as a JavaScript-heavy
-SPA that did not render markdown-friendly content via <code>curl</code>. Because of
-that, every endpoint shape, field name, error code, and webhook
-convention below should be validated against a live OnvoPay sandbox before
-the adapter is routed production traffic.</p>
+<h2 id="known-limitations-p0-scope">Known limitations (P0 scope)<a class="headerlink" href="#known-limitations-p0-scope" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Baseline commit SHA</strong>: <code>b359371d9468f04bac84c7f971037b60acf66029</code>
-  (the tip of <code>main</code> at which this adapter was authored).</li>
-<li><strong>Docs referenced but not verifiable via plaintext fetch</strong>:</li>
-<li><a href="https://docs.onvopay.com/#section/Referencia-API">https://docs.onvopay.com/#section/Referencia-API</a> — base URL, auth,
-    idempotency header, charge endpoints, error body shape.</li>
-<li><a href="https://docs.onvopay.com/#tag/Cargos-recurrentes">https://docs.onvopay.com/#tag/Cargos-recurrentes</a> — subscription
-    endpoints, proration-behavior enum, cancel-at-period-end flag.</li>
-<li>Webhook section (URL not bookmarkable from outside the SPA) —
-    signature algorithm, header name, header shape.</li>
+<li><strong>Connect onboarding is out of scope.</strong> Consumer apps use Stripe's hosted
+  onboarding and pass the resulting <code>acct_*</code> id to their own metadata.</li>
+<li><strong>No <code>PayoutPort</code> / <code>ReconciliationPort</code> / <code>DisputePort</code></strong> in this change.
+  Tasks tracked in the OpenSpec file.</li>
+<li><strong>Agentic Commerce</strong> (Enable-in-Context Selling on AI Agents) deferred to
+  <code>stripe-agentic-commerce-p1</code>.</li>
+<li><strong>Money amounts above <code>Number.MAX_SAFE_INTEGER</code></strong> are rejected with a
+  <code>RangeError</code>. The domain carries <code>bigint</code>; Stripe's SDK wants <code>number</code>.
+  Well above any realistic single-transaction amount.</li>
+<li><strong>Follow-up note on webhook event storage</strong>: the duplicate-event guard
+  currently rides on <code>IdempotencyPort</code>. A dedicated event repository port is
+  tracked for post-P0 work.</li>
 </ul>
-<h3 id="open-todos-search-grep-r-todo-verify-in-the-adapter-tree">Open TODOs (search <code>grep -R "TODO: verify"</code> in the adapter tree)<a class="headerlink" href="#open-todos-search-grep-r-todo-verify-in-the-adapter-tree" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Location</th>
-<th>What to verify</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>client.ts</code> (Bearer header)</td>
-<td>Auth scheme — Bearer vs <code>x-api-key</code> vs Basic.</td>
-</tr>
-<tr>
-<td><code>client.ts</code> (Idempotency-Key header)</td>
-<td>Exact header name OnvoPay expects.</td>
-</tr>
-<tr>
-<td><code>mappers.ts</code> (CRC-only guard)</td>
-<td>Whether USD / EUR are supported.</td>
-</tr>
-<tr>
-<td><code>mappers.ts</code> (<code>toOnvoPayAmount</code>)</td>
-<td>Minor-unit convention for CRC.</td>
-</tr>
-<tr>
-<td><code>mappers.ts</code> (status enums)</td>
-<td>Complete charge and subscription status sets.</td>
-</tr>
-<tr>
-<td><code>payment-gateway.ts</code> (<code>/v1/charges/:id/confirm</code>)</td>
-<td>Endpoint path for confirmation.</td>
-</tr>
-<tr>
-<td><code>subscription.ts</code> (<code>proration_behavior</code>)</td>
-<td>Enum accepted by the switch endpoint.</td>
-</tr>
-<tr>
-<td><code>subscription.ts</code> (<code>prorate</code>)</td>
-<td>Preview endpoint path and response shape.</td>
-</tr>
-<tr>
-<td><code>subscription.ts</code> (<code>cancel</code> effectiveAt)</td>
-<td>Whether the payload returns <code>cancel_at</code>.</td>
-</tr>
-<tr>
-<td><code>webhook-verifier.ts</code> (signature scheme)</td>
-<td>HMAC algorithm + header name.</td>
-</tr>
-<tr>
-<td><code>errors.ts</code> (HTTP 402 mapping)</td>
-<td>Whether 402 or 400+code is used for declines.</td>
-</tr>
-</tbody>
-</table>
-<p>Each TODO in code links back to a specific <code>docs.onvopay.com</code> section. The
-follow-up work is tracked as a docs-verification issue (link in the PR
-description).</p>
+<h2 id="migration-note-for-dojo-os">Migration note for dojo-os<a class="headerlink" href="#migration-note-for-dojo-os" title="Permanent link">&para;</a></h2>
+<p>The sibling <code>dojo-os</code> repo's Stripe Edge Functions are superseded by this
+adapter once the consumer-side PR switches its call sites to
+<code>payments-core</code>'s gRPC endpoint. The factory pattern in this adapter mirrors
+dojo-os's <code>_shared/payments-core/stripe-client.ts</code> contract precisely so the
+rollover is a pure client-side swap — no protocol change for Stripe itself.</p>
 
 
 
