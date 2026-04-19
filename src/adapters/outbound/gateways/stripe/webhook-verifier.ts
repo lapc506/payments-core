@@ -35,7 +35,7 @@ import type {
   WebhookVerifierPort,
 } from '../../../../domain/index.js';
 import type { StripeClient, StripeEvent } from './client.js';
-import { StripeGatewayError, WebhookSignatureError, mapStripeError } from './errors.js';
+import { StripeGatewayError, mapStripeError } from './errors.js';
 
 export interface StripeWebhookVerifierDeps {
   readonly client: StripeClient;
@@ -82,12 +82,11 @@ export class StripeWebhookVerifier implements WebhookVerifierPort {
         this.deps.tolerance,
       );
     } catch (err) {
-      // `StripeSignatureVerificationError` comes through `mapStripeError`
-      // as `WebhookSignatureError` already; re-raise any other surface for
-      // the error mapper to handle.
-      const mapped = mapStripeError(err);
-      if (mapped instanceof WebhookSignatureError) throw mapped;
-      throw mapped;
+      // `mapStripeError` converts `StripeSignatureVerificationError` into
+      // `WebhookSignatureError`; any other Stripe-thrown error lands on
+      // `GATEWAY_INTERNAL` or a specific subclass. Either way the caller
+      // sees a DomainError, never a raw Stripe class.
+      throw mapStripeError(err);
     }
 
     // Duplicate-event idempotency. We key on `evt_*` which Stripe guarantees
