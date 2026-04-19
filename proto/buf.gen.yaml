@@ -34,6 +34,10 @@ plugins:
       - outputServices=grpc-js
       - useOptionals=messages
       - forceLong=string
+      # importSuffix=.js makes cross-file imports end in `.js` so compiled
+      # output runs under native Node ESM without needing a bundler-style
+      # resolver. Required for the sidecar's distroless runtime.
+      - importSuffix=.js
   - plugin: buf.build/grpc-ecosystem/openapiv2
     out: openapi
     opt:

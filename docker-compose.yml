@@ -1,0 +1,29 @@
+# =============================================================================
+# docker-compose.yml — local dev convenience.
+# -----------------------------------------------------------------------------
+# Boots the payments-core sidecar on port 50051. Real outbound adapters do
+# not exist yet (issues #20/#21) so the server replies UNAVAILABLE on every
+# mutating RPC — that is the point. Reads and health checks work.
+#
+# Usage:
+#   docker compose build
+#   docker compose up
+#   grpcurl -plaintext localhost:50051 grpc.health.v1.Health/Check
+# =============================================================================
+
+services:
+  payments-core:
+    build: .
+    image: payments-core:dev
+    container_name: payments-core
+    ports:
+      - "50051:50051"
+    environment:
+      GRPC_PORT: "50051"
+      LOG_LEVEL: "info"
+      SHUTDOWN_DEADLINE_MS: "30000"
+    restart: unless-stopped
+    # Distroless has no shell; use the `grpc_health_probe` binary from a
+    # separate image via `docker compose run`, or point at the port from
+    # the host. The server itself flips Health to SERVING once bound.
+    stop_grace_period: 35s
