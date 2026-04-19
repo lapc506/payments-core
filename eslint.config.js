@@ -189,4 +189,53 @@ export default [
       ],
     },
   },
+  {
+    // Stripe adapter guard — inside `src/adapters/outbound/gateways/stripe/**`
+    // only `client.ts` may import from the `stripe` package; every other file
+    // routes through it. This mirrors the DOJ-3287 factory pattern and keeps
+    // the SDK version / apiVersion in exactly one place.
+    //
+    // Cross-adapter contamination is also forbidden: the Stripe adapter must
+    // not import from sibling adapter directories (e.g. `onvopay/`). The
+    // only cross-layer import allowed is from `src/domain/**`.
+    files: ['src/adapters/outbound/gateways/stripe/**/*.ts'],
+    ignores: ['src/adapters/outbound/gateways/stripe/client.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['stripe', 'stripe/*'],
+              message:
+                "Import Stripe types and client only through './client.js' (the DOJ-3287 factory pattern).",
+            },
+            {
+              group: ['**/adapters/outbound/gateways/!(stripe)/**'],
+              message:
+                'Stripe adapter must not import from sibling adapter directories.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // The factory itself is the single allowed `new Stripe(...)` site. We
+    // re-assert the no-restricted-syntax rule here as a second line of
+    // defence: any future file that tries `new Stripe(...)` outside this
+    // path trips the rule at lint time.
+    files: ['src/**/*.ts'],
+    ignores: ['src/adapters/outbound/gateways/stripe/client.ts'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "NewExpression[callee.name='Stripe']",
+          message:
+            'Construct Stripe only via adapters/outbound/gateways/stripe/client.ts (createStripeClient).',
+        },
+      ],
+    },
+  },
 ];
