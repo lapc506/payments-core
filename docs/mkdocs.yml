@@ -139,6 +139,7 @@ nav:
   - Ports: docs/ports/index.md
   - Adapters:
     - Overview: docs/adapters/index.md
+    - Stripe: docs/adapters/stripe.md
     - OnvoPay: docs/adapters/onvopay.md
   - Integrations:
     - Overview: docs/integrations/index.md
