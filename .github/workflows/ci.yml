@@ -38,3 +38,36 @@ jobs:
 
       - name: Test
         run: pnpm test -- --reporter=verbose
+
+  proto:
+    name: proto lint + breaking (buf)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # buf breaking needs history to diff against the main branch.
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: buf lint
+        run: pnpm proto:lint
+
+      # `buf breaking` is skipped on the initial-landing PR because there is
+      # no prior proto state to diff against. It becomes mandatory on
+      # subsequent PRs — remove the `continue-on-error` once this change is
+      # merged to main.
+      - name: buf breaking
+        run: pnpm proto:breaking
+        continue-on-error: true

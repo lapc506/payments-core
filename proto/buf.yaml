@@ -1,0 +1,34 @@
+# =============================================================================
+# buf.yaml — lint + breaking config for payments-core proto sources
+# -----------------------------------------------------------------------------
+# Docs: https://buf.build/docs/configuration/v1/buf-yaml
+#
+# - Lint uses the STANDARD preset (the v1 replacement for DEFAULT) minus:
+#     - RPC_REQUEST_STANDARD_NAME / RPC_RESPONSE_STANDARD_NAME: we use
+#       top-level `InitiateCheckoutRequest` / `InitiateCheckoutResponse`
+#       rather than nesting types inside the RPC.
+#     - SERVICE_SUFFIX: the design names the service `PaymentsCore` (not
+#       `PaymentsCoreService`); renaming it is a breaking change for every
+#       generated stub.
+# - Enum zero values must end in `_UNSPECIFIED`.
+# - Breaking uses FILE scope — additive changes allowed within a file, but
+#   a file renamed or removed is breaking. Exercised in CI on every PR
+#   after the initial-landing merge.
+#
+# Proto sources live in the buf-canonical layout
+# (`lapc506/payments_core/v1/`, `lapc506/payments_core/events/v1/`) so the
+# PACKAGE_DIRECTORY_MATCH rule passes without exemption.
+# =============================================================================
+
+version: v1
+lint:
+  use:
+    - STANDARD
+  except:
+    - RPC_REQUEST_STANDARD_NAME
+    - RPC_RESPONSE_STANDARD_NAME
+    - SERVICE_SUFFIX
+  enum_zero_value_suffix: _UNSPECIFIED
+breaking:
+  use:
+    - FILE

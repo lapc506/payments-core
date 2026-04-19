@@ -1,0 +1,195 @@
+// =============================================================================
+// payments-core v1 — cross-core events
+// -----------------------------------------------------------------------------
+// Typed events emitted to the event bus (Kafka or NATS, decided by the
+// consumer backend). `consumer` is the tenant tag so downstream cores
+// (invoice-core, marketplace-core, altrupets-api) can route by tenant.
+//
+// A separate file is required because events live in a distinct package
+// (`lapc506.payments_core.events.v1`). Proto3 allows at most one package
+// declaration per file, so a single file cannot host both the service and
+// the events.
+//
+// v1 is additive-only once frozen. New events are new messages; existing
+// events do not reshape.
+// =============================================================================
+
+syntax = "proto3";
+
+package lapc506.payments_core.events.v1;
+
+// go_package is required by the openapiv2 generator even though payments-core
+// does not ship a Go binding. Any stable dotted path works; the value is not
+// published.
+option go_package = "github.com/lapc506/payments-core/gen/go/lapc506/payments_core/events/v1;paymentscoreeventsv1";
+
+import "google/protobuf/timestamp.proto";
+import "lapc506/payments_core/v1/payments_core.proto";
+
+// =============================================================================
+// Payment events
+// =============================================================================
+
+message PaymentSucceededEvent {
+  string intent_id = 1;
+  string consumer = 2;
+  lapc506.payments_core.v1.Money amount = 3;
+  lapc506.payments_core.v1.GatewayPreference gateway = 4;
+  google.protobuf.Timestamp occurred_at = 5;
+  map<string, string> metadata = 6;
+}
+
+message PaymentFailedEvent {
+  string intent_id = 1;
+  string consumer = 2;
+  lapc506.payments_core.v1.Money amount = 3;
+  lapc506.payments_core.v1.GatewayPreference gateway = 4;
+  string failure_code = 5;
+  string failure_message = 6;
+  google.protobuf.Timestamp occurred_at = 7;
+  map<string, string> metadata = 8;
+}
+
+message PaymentRefundedEvent {
+  string intent_id = 1;
+  string refund_id = 2;
+  string consumer = 3;
+  lapc506.payments_core.v1.Money amount = 4;
+  lapc506.payments_core.v1.GatewayPreference gateway = 5;
+  string reason = 6;
+  google.protobuf.Timestamp occurred_at = 7;
+  map<string, string> metadata = 8;
+}
+
+message PaymentDisputedEvent {
+  string intent_id = 1;
+  string dispute_id = 2;
+  string consumer = 3;
+  lapc506.payments_core.v1.Money amount = 4;
+  lapc506.payments_core.v1.GatewayPreference gateway = 5;
+  string reason = 6;
+  google.protobuf.Timestamp occurred_at = 7;
+  map<string, string> metadata = 8;
+}
+
+// =============================================================================
+// Subscription events
+// =============================================================================
+
+message SubscriptionActivatedEvent {
+  string subscription_id = 1;
+  string consumer = 2;
+  string customer_reference = 3;
+  string plan_id = 4;
+  lapc506.payments_core.v1.GatewayPreference gateway = 5;
+  google.protobuf.Timestamp occurred_at = 6;
+  map<string, string> metadata = 7;
+}
+
+message SubscriptionPastDueEvent {
+  string subscription_id = 1;
+  string consumer = 2;
+  string customer_reference = 3;
+  lapc506.payments_core.v1.Money amount_due = 4;
+  google.protobuf.Timestamp occurred_at = 5;
+  map<string, string> metadata = 6;
+}
+
+message SubscriptionCanceledEvent {
+  string subscription_id = 1;
+  string consumer = 2;
+  string customer_reference = 3;
+  string reason = 4;
+  bool at_period_end = 5;
+  google.protobuf.Timestamp effective_at = 6;
+  google.protobuf.Timestamp occurred_at = 7;
+  map<string, string> metadata = 8;
+}
+
+// =============================================================================
+// Escrow events
+// =============================================================================
+
+message EscrowHeldEvent {
+  string escrow_id = 1;
+  string consumer = 2;
+  string payer_reference = 3;
+  string payee_reference = 4;
+  lapc506.payments_core.v1.Money amount = 5;
+  lapc506.payments_core.v1.GatewayPreference gateway = 6;
+  google.protobuf.Timestamp occurred_at = 7;
+  map<string, string> metadata = 8;
+}
+
+message EscrowReleasedEvent {
+  string escrow_id = 1;
+  string consumer = 2;
+  lapc506.payments_core.v1.Money amount = 3;
+  google.protobuf.Timestamp occurred_at = 4;
+  map<string, string> metadata = 5;
+}
+
+message EscrowDisputedEvent {
+  string escrow_id = 1;
+  string dispute_id = 2;
+  string consumer = 3;
+  string reason = 4;
+  google.protobuf.Timestamp occurred_at = 5;
+  map<string, string> metadata = 6;
+}
+
+// =============================================================================
+// Payout events
+// =============================================================================
+
+message PayoutIssuedEvent {
+  string payout_id = 1;
+  string consumer = 2;
+  string beneficiary_reference = 3;
+  lapc506.payments_core.v1.Money amount = 4;
+  lapc506.payments_core.v1.GatewayPreference gateway = 5;
+  google.protobuf.Timestamp occurred_at = 6;
+  map<string, string> metadata = 7;
+}
+
+message PayoutFailedEvent {
+  string payout_id = 1;
+  string consumer = 2;
+  string beneficiary_reference = 3;
+  lapc506.payments_core.v1.Money amount = 4;
+  lapc506.payments_core.v1.GatewayPreference gateway = 5;
+  string failure_code = 6;
+  string failure_message = 7;
+  google.protobuf.Timestamp occurred_at = 8;
+  map<string, string> metadata = 9;
+}
+
+// =============================================================================
+// Donation events
+// -----------------------------------------------------------------------------
+// Emitted as typed variants so altrupets-api (and future donation consumers)
+// can subscribe specifically rather than filtering PaymentSucceededEvent by
+// metadata keys.
+// =============================================================================
+
+message DonationReceivedEvent {
+  string intent_id = 1;
+  string consumer = 2;
+  string donor_reference = 3;
+  string cause_reference = 4;
+  lapc506.payments_core.v1.Money amount = 5;
+  lapc506.payments_core.v1.GatewayPreference gateway = 6;
+  google.protobuf.Timestamp occurred_at = 7;
+  map<string, string> metadata = 8;
+}
+
+message RecurringDonationActivatedEvent {
+  string subscription_id = 1;
+  string consumer = 2;
+  string donor_reference = 3;
+  string cause_reference = 4;
+  string plan_id = 5;
+  lapc506.payments_core.v1.GatewayPreference gateway = 6;
+  google.protobuf.Timestamp occurred_at = 7;
+  map<string, string> metadata = 8;
+}

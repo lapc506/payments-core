@@ -1,48 +1,881 @@
-openapi: 3.1.0
+swagger: "2.0"
 info:
-  title: payments-core
-  version: 0.1.0-stub
-  summary: Placeholder descriptor until proto-contract-v1 lands
-  description: |
-    This is a stub OpenAPI descriptor for `payments-core`. It exposes a single
-    `/health` operation so the documentation site renders the Stoplight
-    Elements embed without a 404. The real descriptor is generated from the
-    protobuf contract in `proto/` by the `proto-contract-v1` change and
-    replaces this file wholesale.
-  license:
-    name: See repository LICENSE.md
-    url: https://github.com/lapc506/payments-core/blob/main/LICENSE.md
-servers:
-  - url: https://api.example.invalid
-    description: Placeholder server; no live endpoint during bootstrap
+  title: lapc506/payments_core/v1/payments_core.proto
+  version: version not set
+tags:
+  - name: PaymentsCore
+consumes:
+  - application/json
+produces:
+  - application/json
 paths:
-  /health:
-    get:
-      operationId: getHealth
-      summary: Liveness probe
-      description: |
-        Returns `200 OK` with a constant body. Used by load balancers and
-        orchestrators to confirm the process is running. Replaced by the
-        generated descriptor once `proto-contract-v1` lands.
+  /lapc506.payments_core.v1.PaymentsCore/CancelSubscription:
+    post:
+      operationId: PaymentsCore_CancelSubscription
       responses:
         "200":
-          description: Service is alive
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/HealthResponse"
-              examples:
-                ok:
-                  value:
-                    status: ok
-components:
-  schemas:
-    HealthResponse:
-      type: object
-      required:
-        - status
-      properties:
-        status:
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1CancelSubscriptionResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1CancelSubscriptionRequest'
+      tags:
+        - PaymentsCore
+  /lapc506.payments_core.v1.PaymentsCore/ConfirmCheckout:
+    post:
+      operationId: PaymentsCore_ConfirmCheckout
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1ConfirmCheckoutResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1ConfirmCheckoutRequest'
+      tags:
+        - PaymentsCore
+  /lapc506.payments_core.v1.PaymentsCore/CreatePayout:
+    post:
+      summary: |-
+        ---------------------------------------------------------------------------
+        Payouts
+        ---------------------------------------------------------------------------
+      operationId: PaymentsCore_CreatePayout
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1CreatePayoutResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1CreatePayoutRequest'
+      tags:
+        - PaymentsCore
+  /lapc506.payments_core.v1.PaymentsCore/CreateSubscription:
+    post:
+      summary: |-
+        ---------------------------------------------------------------------------
+        Subscriptions
+        ---------------------------------------------------------------------------
+      operationId: PaymentsCore_CreateSubscription
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1CreateSubscriptionResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1CreateSubscriptionRequest'
+      tags:
+        - PaymentsCore
+  /lapc506.payments_core.v1.PaymentsCore/DisputeEscrow:
+    post:
+      operationId: PaymentsCore_DisputeEscrow
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1DisputeEscrowResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1DisputeEscrowRequest'
+      tags:
+        - PaymentsCore
+  /lapc506.payments_core.v1.PaymentsCore/GetPaymentHistory:
+    post:
+      summary: |-
+        ---------------------------------------------------------------------------
+        Reads
+        ---------------------------------------------------------------------------
+      operationId: PaymentsCore_GetPaymentHistory
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1GetPaymentHistoryResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1GetPaymentHistoryRequest'
+      tags:
+        - PaymentsCore
+  /lapc506.payments_core.v1.PaymentsCore/HoldEscrow:
+    post:
+      summary: |-
+        ---------------------------------------------------------------------------
+        Escrow
+        ---------------------------------------------------------------------------
+      operationId: PaymentsCore_HoldEscrow
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1HoldEscrowResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1HoldEscrowRequest'
+      tags:
+        - PaymentsCore
+  /lapc506.payments_core.v1.PaymentsCore/InitiateAgenticPayment:
+    post:
+      summary: |-
+        ---------------------------------------------------------------------------
+        Agentic commerce (entry point from agentic-core)
+        ---------------------------------------------------------------------------
+      operationId: PaymentsCore_InitiateAgenticPayment
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1InitiateAgenticPaymentResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1InitiateAgenticPaymentRequest'
+      tags:
+        - PaymentsCore
+  /lapc506.payments_core.v1.PaymentsCore/InitiateCheckout:
+    post:
+      summary: |-
+        ---------------------------------------------------------------------------
+        Checkout
+        ---------------------------------------------------------------------------
+      operationId: PaymentsCore_InitiateCheckout
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1InitiateCheckoutResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1InitiateCheckoutRequest'
+      tags:
+        - PaymentsCore
+  /lapc506.payments_core.v1.PaymentsCore/ProcessWebhook:
+    post:
+      summary: |-
+        ---------------------------------------------------------------------------
+        Webhook ingestion (called inbound from gateway-facing HTTP receiver)
+        ---------------------------------------------------------------------------
+      operationId: PaymentsCore_ProcessWebhook
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1ProcessWebhookResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1ProcessWebhookRequest'
+      tags:
+        - PaymentsCore
+  /lapc506.payments_core.v1.PaymentsCore/ReconcileDaily:
+    post:
+      operationId: PaymentsCore_ReconcileDaily
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1ReconcileDailyResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1ReconcileDailyRequest'
+      tags:
+        - PaymentsCore
+  /lapc506.payments_core.v1.PaymentsCore/RefundPayment:
+    post:
+      operationId: PaymentsCore_RefundPayment
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1RefundPaymentResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1RefundPaymentRequest'
+      tags:
+        - PaymentsCore
+  /lapc506.payments_core.v1.PaymentsCore/ReleaseEscrow:
+    post:
+      operationId: PaymentsCore_ReleaseEscrow
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1ReleaseEscrowResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1ReleaseEscrowRequest'
+      tags:
+        - PaymentsCore
+  /lapc506.payments_core.v1.PaymentsCore/SwitchSubscription:
+    post:
+      operationId: PaymentsCore_SwitchSubscription
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1SwitchSubscriptionResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1SwitchSubscriptionRequest'
+      tags:
+        - PaymentsCore
+definitions:
+  WalletTokenProvider:
+    type: string
+    enum:
+      - PROVIDER_UNSPECIFIED
+      - PROVIDER_APPLE_PAY
+      - PROVIDER_GOOGLE_PAY
+    default: PROVIDER_UNSPECIFIED
+  protobufAny:
+    type: object
+    properties:
+      '@type':
+        type: string
+    additionalProperties: {}
+  rpcStatus:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/protobufAny'
+  v1CancelSubscriptionRequest:
+    type: object
+    properties:
+      subscriptionId:
+        type: string
+      atPeriodEnd:
+        type: boolean
+        description: |-
+          at_period_end = true schedules cancellation for the end of the billing
+          cycle. false cancels immediately.
+      reason:
+        type: string
+      idempotencyKey:
+        type: string
+  v1CancelSubscriptionResponse:
+    type: object
+    properties:
+      subscriptionId:
+        type: string
+      status:
+        $ref: '#/definitions/v1SubscriptionStatus'
+      effectiveAt:
+        type: string
+        format: date-time
+  v1ConfirmCheckoutRequest:
+    type: object
+    properties:
+      intentId:
+        type: string
+      threeDsResult:
+        type: string
+      walletToken:
+        $ref: '#/definitions/v1WalletToken'
+      idempotencyKey:
+        type: string
+  v1ConfirmCheckoutResponse:
+    type: object
+    properties:
+      intentId:
+        type: string
+      status:
+        $ref: '#/definitions/v1PaymentStatus'
+  v1CreatePayoutRequest:
+    type: object
+    properties:
+      consumer:
+        type: string
+      beneficiaryReference:
+        type: string
+        description: |-
+          beneficiary_reference is the caller's identifier for the destination
+          account. payments-core looks up the gateway-side record keyed to this
+          reference (registered out of band for v1).
+      amount:
+        $ref: '#/definitions/v1Money'
+      description:
+        type: string
+      gateway:
+        $ref: '#/definitions/v1GatewayPreference'
+      metadata:
+        type: object
+        additionalProperties:
           type: string
-          enum: [ok]
-          description: Literal string "ok" when the service is healthy.
+      idempotencyKey:
+        type: string
+  v1CreatePayoutResponse:
+    type: object
+    properties:
+      payoutId:
+        type: string
+      status:
+        $ref: '#/definitions/v1PayoutStatus'
+      chosenGateway:
+        $ref: '#/definitions/v1GatewayPreference'
+  v1CreateSubscriptionRequest:
+    type: object
+    properties:
+      consumer:
+        type: string
+      customerReference:
+        type: string
+      planId:
+        type: string
+        description: |-
+          plan_id is an opaque identifier the caller has previously registered
+          with payments-core (out of band for v1). It encodes cadence and amount.
+      gateway:
+        $ref: '#/definitions/v1GatewayPreference'
+      metadata:
+        type: object
+        additionalProperties:
+          type: string
+      idempotencyKey:
+        type: string
+  v1CreateSubscriptionResponse:
+    type: object
+    properties:
+      subscriptionId:
+        type: string
+      status:
+        $ref: '#/definitions/v1SubscriptionStatus'
+      chosenGateway:
+        $ref: '#/definitions/v1GatewayPreference'
+  v1DisputeEscrowRequest:
+    type: object
+    properties:
+      escrowId:
+        type: string
+      reason:
+        type: string
+      evidence:
+        type: array
+        items:
+          type: string
+        description: |-
+          evidence is a list of caller-supplied URLs or document ids describing
+          the dispute. Opaque to payments-core.
+      idempotencyKey:
+        type: string
+  v1DisputeEscrowResponse:
+    type: object
+    properties:
+      escrowId:
+        type: string
+      disputeId:
+        type: string
+      status:
+        $ref: '#/definitions/v1EscrowStatus'
+  v1EscrowStatus:
+    type: string
+    enum:
+      - ESCROW_STATUS_UNSPECIFIED
+      - ESCROW_STATUS_HELD
+      - ESCROW_STATUS_RELEASED
+      - ESCROW_STATUS_DISPUTED
+      - ESCROW_STATUS_REFUNDED
+    default: ESCROW_STATUS_UNSPECIFIED
+    description: EscrowStatus is the lifecycle stage of an escrow hold.
+  v1GatewayPreference:
+    type: string
+    enum:
+      - GATEWAY_PREFERENCE_UNSPECIFIED
+      - GATEWAY_PREFERENCE_AUTO
+      - GATEWAY_PREFERENCE_STRIPE
+      - GATEWAY_PREFERENCE_ONVOPAY
+      - GATEWAY_PREFERENCE_TILOPAY
+      - GATEWAY_PREFERENCE_DLOCAL
+      - GATEWAY_PREFERENCE_REVOLUT
+      - GATEWAY_PREFERENCE_CONVERA
+      - GATEWAY_PREFERENCE_RIPPLE_XRPL
+    default: GATEWAY_PREFERENCE_UNSPECIFIED
+    description: |-
+      GatewayPreference lets callers hint which gateway should handle a request.
+      AUTO (the default) lets payments-core pick based on region, currency, cost,
+      and availability. Adapters for each gateway land in follow-on changes
+      (stripe-adapter-p0, onvopay-adapter-p0, …).
+  v1GetPaymentHistoryRequest:
+    type: object
+    properties:
+      consumer:
+        type: string
+      customerReference:
+        type: string
+      pageSize:
+        type: integer
+        format: int32
+        description: Pagination. page_size defaults to 50 when zero; max 500.
+      pageToken:
+        type: string
+      since:
+        type: string
+        format: date-time
+        description: Optional time window filter. Both inclusive.
+      until:
+        type: string
+        format: date-time
+  v1GetPaymentHistoryResponse:
+    type: object
+    properties:
+      items:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1PaymentHistoryItem'
+      nextPageToken:
+        type: string
+  v1HoldEscrowRequest:
+    type: object
+    properties:
+      consumer:
+        type: string
+      payerReference:
+        type: string
+      payeeReference:
+        type: string
+      amount:
+        $ref: '#/definitions/v1Money'
+      releaseAfter:
+        type: string
+        format: date-time
+        description: |-
+          release_after is a best-effort deadline. Some gateways auto-release; for
+          gateways that do not, payments-core schedules the release.
+      gateway:
+        $ref: '#/definitions/v1GatewayPreference'
+      metadata:
+        type: object
+        additionalProperties:
+          type: string
+      idempotencyKey:
+        type: string
+  v1HoldEscrowResponse:
+    type: object
+    properties:
+      escrowId:
+        type: string
+      status:
+        $ref: '#/definitions/v1EscrowStatus'
+      chosenGateway:
+        $ref: '#/definitions/v1GatewayPreference'
+  v1InitiateAgenticPaymentRequest:
+    type: object
+    properties:
+      consumer:
+        type: string
+      agentId:
+        type: string
+        description: |-
+          agent_id and tool_call_id form the audit trail that links this payment
+          back to the LLM tool call that originated it.
+      toolCallId:
+        type: string
+      auditJwt:
+        type: string
+        description: |-
+          audit_jwt is a scoped JWT minted by agentic-core that proves the user
+          consented to this payment under specific constraints (amount ceiling,
+          merchant allowlist, expiry). payments-core verifies the JWT before
+          charging.
+      customerReference:
+        type: string
+      amount:
+        $ref: '#/definitions/v1Money'
+      description:
+        type: string
+      gateway:
+        $ref: '#/definitions/v1GatewayPreference'
+      metadata:
+        type: object
+        additionalProperties:
+          type: string
+      idempotencyKey:
+        type: string
+  v1InitiateAgenticPaymentResponse:
+    type: object
+    properties:
+      intentId:
+        type: string
+      status:
+        $ref: '#/definitions/v1PaymentStatus'
+      chosenGateway:
+        $ref: '#/definitions/v1GatewayPreference'
+  v1InitiateCheckoutRequest:
+    type: object
+    properties:
+      consumer:
+        type: string
+        description: |-
+          consumer is the tenant tag identifying the caller (e.g. "dojo-os",
+          "altrupets-api"). Used for routing events and for audit.
+      customerReference:
+        type: string
+        description: |-
+          customer_reference is the caller's own identifier for the end user or
+          organization paying. payments-core does not interpret this string.
+      amount:
+        $ref: '#/definitions/v1Money'
+      description:
+        type: string
+      gateway:
+        $ref: '#/definitions/v1GatewayPreference'
+        description: |-
+          gateway hints which provider to use. AUTO (default) lets payments-core
+          choose. If the preference is unavailable, payments-core MAY fall back and
+          the chosen gateway is returned on the response.
+      successUrl:
+        type: string
+        description: |-
+          success_url / cancel_url follow the Stripe redirect model. They are
+          optional for gateways that do not redirect (card-present, wallet-direct).
+      cancelUrl:
+        type: string
+      metadata:
+        type: object
+        additionalProperties:
+          type: string
+        description: |-
+          metadata is free-form key/value pairs the caller can attach for its own
+          bookkeeping. Propagated to emitted events.
+      idempotencyKey:
+        type: string
+        description: |-
+          Required. Enforced by payments-core against a Postgres uniqueness table
+          so retried requests return the same intent.
+  v1InitiateCheckoutResponse:
+    type: object
+    properties:
+      intentId:
+        type: string
+      status:
+        $ref: '#/definitions/v1PaymentStatus'
+      chosenGateway:
+        $ref: '#/definitions/v1GatewayPreference'
+      clientSecret:
+        type: string
+        description: |-
+          client_secret / redirect_url are populated depending on the gateway.
+          client_secret is used by Stripe.js-style SDKs; redirect_url is used by
+          hosted checkout flows.
+      redirectUrl:
+        type: string
+  v1Money:
+    type: object
+    properties:
+      amountMinor:
+        type: string
+        format: int64
+        title: 1234 for $12.34
+      currency:
+        type: string
+        title: ISO 4217, e.g. "USD" / "CRC"
+    description: |-
+      Money is the canonical amount+currency pair used across the ecosystem.
+      `amount_minor` is in the smallest currency unit (cents, céntimos, drops).
+  v1PaymentHistoryItem:
+    type: object
+    properties:
+      intentId:
+        type: string
+      status:
+        $ref: '#/definitions/v1PaymentStatus'
+      amount:
+        $ref: '#/definitions/v1Money'
+      gateway:
+        $ref: '#/definitions/v1GatewayPreference'
+      createdAt:
+        type: string
+        format: date-time
+      metadata:
+        type: object
+        additionalProperties:
+          type: string
+  v1PaymentStatus:
+    type: string
+    enum:
+      - PAYMENT_STATUS_UNSPECIFIED
+      - PAYMENT_STATUS_REQUIRES_ACTION
+      - PAYMENT_STATUS_PROCESSING
+      - PAYMENT_STATUS_SUCCEEDED
+      - PAYMENT_STATUS_FAILED
+      - PAYMENT_STATUS_CANCELED
+      - PAYMENT_STATUS_REFUNDED
+    default: PAYMENT_STATUS_UNSPECIFIED
+    description: |-
+      PaymentStatus is the lifecycle stage of a payment intent. Adapters map their
+      provider-specific statuses onto this canonical set.
+
+       - PAYMENT_STATUS_REQUIRES_ACTION: 3DS / SCA challenge pending
+  v1PayoutStatus:
+    type: string
+    enum:
+      - PAYOUT_STATUS_UNSPECIFIED
+      - PAYOUT_STATUS_PENDING
+      - PAYOUT_STATUS_IN_TRANSIT
+      - PAYOUT_STATUS_PAID
+      - PAYOUT_STATUS_FAILED
+    default: PAYOUT_STATUS_UNSPECIFIED
+    description: PayoutStatus is the lifecycle stage of a payout to a beneficiary.
+  v1ProcessWebhookRequest:
+    type: object
+    properties:
+      gateway:
+        $ref: '#/definitions/v1GatewayPreference'
+        description: gateway tells payments-core which adapter's signature verifier to use.
+      signature:
+        type: string
+        description: signature is the provider's signature header (e.g. Stripe-Signature).
+      payload:
+        type: string
+        format: byte
+        description: |-
+          payload is the raw request body as received. Signature verification is
+          sensitive to any whitespace or encoding change, so this MUST be the
+          bytes that the HTTP receiver saw.
+      receivedAt:
+        type: string
+        format: date-time
+        description: received_at is the ingress timestamp; used for replay-window checks.
+      idempotencyKey:
+        type: string
+  v1ProcessWebhookResponse:
+    type: object
+    properties:
+      eventId:
+        type: string
+      accepted:
+        type: boolean
+  v1ReconcileDailyRequest:
+    type: object
+    properties:
+      date:
+        type: string
+        description: date is the UTC calendar day to reconcile, formatted YYYY-MM-DD.
+      gateway:
+        $ref: '#/definitions/v1GatewayPreference'
+        description: |-
+          gateway scopes the reconciliation to one provider. UNSPECIFIED/AUTO
+          means reconcile across all active gateways.
+  v1ReconcileDailyResponse:
+    type: object
+    properties:
+      date:
+        type: string
+      matchedCount:
+        type: integer
+        format: int32
+      diffs:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1ReconciliationDiff'
+  v1ReconciliationDiff:
+    type: object
+    properties:
+      intentId:
+        type: string
+        description: |-
+          intent_id is present for discrepancies tied to a known local record;
+          empty when the gateway has a ledger entry with no local counterpart.
+      kind:
+        type: string
+        title: |-
+          kind categorizes the discrepancy:
+            "missing_local"    — gateway has a charge we do not
+            "missing_gateway"  — local record with no gateway counterpart
+            "amount_mismatch"  — amounts diverge
+            "status_mismatch"  — statuses diverge
+      expected:
+        $ref: '#/definitions/v1Money'
+      actual:
+        $ref: '#/definitions/v1Money'
+      description:
+        type: string
+  v1RefundPaymentRequest:
+    type: object
+    properties:
+      intentId:
+        type: string
+      amount:
+        $ref: '#/definitions/v1Money'
+        description: |-
+          amount is optional. When absent, the refund is a full refund. When
+          present, it is a partial refund; the adapter validates it does not
+          exceed the charged amount.
+      reason:
+        type: string
+      idempotencyKey:
+        type: string
+  v1RefundPaymentResponse:
+    type: object
+    properties:
+      refundId:
+        type: string
+      status:
+        $ref: '#/definitions/v1PaymentStatus'
+  v1ReleaseEscrowRequest:
+    type: object
+    properties:
+      escrowId:
+        type: string
+      amount:
+        $ref: '#/definitions/v1Money'
+        description: amount is optional; omit to release the full held amount.
+      idempotencyKey:
+        type: string
+  v1ReleaseEscrowResponse:
+    type: object
+    properties:
+      escrowId:
+        type: string
+      status:
+        $ref: '#/definitions/v1EscrowStatus'
+  v1SubscriptionStatus:
+    type: string
+    enum:
+      - SUBSCRIPTION_STATUS_UNSPECIFIED
+      - SUBSCRIPTION_STATUS_ACTIVE
+      - SUBSCRIPTION_STATUS_PAST_DUE
+      - SUBSCRIPTION_STATUS_CANCELED
+      - SUBSCRIPTION_STATUS_PAUSED
+    default: SUBSCRIPTION_STATUS_UNSPECIFIED
+    description: SubscriptionStatus is the lifecycle stage of a subscription.
+  v1SwitchSubscriptionRequest:
+    type: object
+    properties:
+      subscriptionId:
+        type: string
+      newPlanId:
+        type: string
+      prorationBehavior:
+        type: string
+        description: |-
+          proration_behavior controls how mid-period changes are billed. Values
+          are gateway-agnostic: "create_prorations", "none", "always_invoice".
+      idempotencyKey:
+        type: string
+  v1SwitchSubscriptionResponse:
+    type: object
+    properties:
+      subscriptionId:
+        type: string
+      status:
+        $ref: '#/definitions/v1SubscriptionStatus'
+  v1WalletToken:
+    type: object
+    properties:
+      provider:
+        $ref: '#/definitions/WalletTokenProvider'
+      payload:
+        type: string
+        format: byte
+    description: |-
+      WalletToken is the opaque encrypted payload produced by Apple Pay / Google
+      Pay SDKs on the client. payments-core forwards the bytes to the chosen
+      gateway adapter for decryption and charge.

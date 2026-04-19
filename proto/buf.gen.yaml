@@ -1,0 +1,43 @@
+# =============================================================================
+# buf.gen.yaml — codegen plugins for payments-core
+# -----------------------------------------------------------------------------
+# Paths are relative to the directory `buf generate` is invoked from (the
+# repo root, via `pnpm proto:generate`), not to this file.
+#
+# Two generated outputs:
+#
+# 1. ts-proto → src/generated/ (gitignored, regenerated on demand).
+#    - outputServices=grpc-js: produces client + server stubs against
+#      @grpc/grpc-js.
+#    - useOptionals=messages: message fields are optional in the generated
+#      TypeScript (matches proto3's implicit-default semantics and avoids
+#      brittle non-null assertions).
+#    - esModuleInterop=true: so the output plays nicely with our ESM config.
+#    - forceLong=string: int64 fields become strings (safe for JSON/JS).
+#
+# 2. openapiv2 → openapi/ (committed as payments_core.yaml after the
+#    post-generate rename step in `pnpm proto:generate`).
+#    - generate_unbound_methods=true: emit every RPC, not just ones with
+#      google.api.http annotations. v1 has no HTTP bindings; this is pure
+#      documentation for Stoplight Elements.
+#    - allow_merge=true + merge_file_name: single consolidated descriptor
+#      covering both proto files.
+#    - output_format=yaml: Stoplight Elements reads yaml natively.
+# =============================================================================
+
+version: v1
+plugins:
+  - plugin: buf.build/community/stephenh-ts-proto
+    out: src/generated
+    opt:
+      - esModuleInterop=true
+      - outputServices=grpc-js
+      - useOptionals=messages
+      - forceLong=string
+  - plugin: buf.build/grpc-ecosystem/openapiv2
+    out: openapi
+    opt:
+      - generate_unbound_methods=true
+      - output_format=yaml
+      - allow_merge=true
+      - merge_file_name=payments_core
