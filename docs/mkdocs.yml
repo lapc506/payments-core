@@ -137,7 +137,9 @@ nav:
   - Governance: docs/governance/index.md
   - Architecture: docs/architecture/index.md
   - Ports: docs/ports/index.md
-  - Adapters: docs/adapters/index.md
+  - Adapters:
+    - Overview: docs/adapters/index.md
+    - OnvoPay: docs/adapters/onvopay.md
   - Integrations:
     - Overview: docs/integrations/index.md
     - Consumers:
