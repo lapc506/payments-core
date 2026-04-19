@@ -84,6 +84,37 @@ export default [
     },
   },
   {
+    // OnvoPay adapter isolation — the adapter must not reach into sibling
+    // adapters (stripe/, tilopay/, etc.) nor into the inbound gRPC layer.
+    // Allowed dependencies: `src/domain/**`, Node built-ins, and `msw` in
+    // tests. Anything else is a hexagonal boundary violation.
+    files: ['src/adapters/outbound/gateways/onvopay/**/*.ts'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: [
+                '**/adapters/outbound/gateways/stripe/**',
+                '**/adapters/outbound/gateways/tilopay/**',
+                '**/adapters/outbound/gateways/dlocal/**',
+                '**/adapters/outbound/gateways/revolut/**',
+                '**/adapters/outbound/gateways/convera/**',
+                '**/adapters/outbound/gateways/ripple_xrpl/**',
+                '**/adapters/inbound/**',
+                '**/application/**',
+                '**/infrastructure/**',
+              ],
+              message:
+                'OnvoPay adapter must not import from sibling adapters, inbound layer, application layer, or infrastructure. Depend on src/domain/** only.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     // Application purity guard — no adapter imports, no gateway-specific SDKs,
     // no direct I/O libraries. The application layer consumes the domain via
     // the `@/domain` barrel (`src/domain/index.ts`) and nothing else.
