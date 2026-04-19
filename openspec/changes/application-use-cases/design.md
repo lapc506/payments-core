@@ -1,41 +1,49 @@
 # Design — Application use cases
 
+## Reconciliation note — 13 → 14 (2026-04-18)
+
+The initial draft of this document enumerated **13** use cases, reflecting an
+earlier expansion that predated the freeze of `proto-contract-v1`. The
+authoritative proto service `lapc506.payments_core.v1.PaymentsCore`
+declares **14 RPCs**; the missing entry was `DisputeEscrow` (escrow-side
+dispute distinct from `DisputePort.submitEvidence`, which handles
+chargeback-style disputes on `PaymentIntent`s).
+
+Where this document and the proto disagree, the proto wins. The tasks
+checklist in `tasks.md` has been updated to 14 entries; `proposal.md` is
+unchanged because its "why" section remains accurate.
+
 ## File layout
+
+To honor the 15-file budget tracked on issue #18, the 14 use cases are
+grouped into seven sub-domain files rather than one file per use case. The
+actual layout landed in this change is:
 
 ```
 src/application/
-├── index.ts
-├── errors.ts                            domain → application error mapping
-├── ports/
-│   ├── event-bus-port.ts                application-level port
-│   ├── repositories/
-│   │   ├── payment-intent-repository-port.ts
-│   │   ├── subscription-repository-port.ts
-│   │   ├── escrow-repository-port.ts
-│   │   ├── payout-repository-port.ts
-│   │   ├── refund-repository-port.ts
-│   │   ├── dispute-repository-port.ts
-│   │   └── donation-repository-port.ts
-│   └── gateway-registry-port.ts         factory for gateway selection
-├── use-cases/
-│   ├── initiate-checkout.ts
-│   ├── confirm-checkout.ts
-│   ├── process-webhook.ts
-│   ├── refund-payment.ts
-│   ├── create-subscription.ts
-│   ├── switch-subscription.ts
-│   ├── cancel-subscription.ts
-│   ├── hold-escrow.ts
-│   ├── release-escrow.ts
-│   ├── create-payout.ts
-│   ├── handle-agentic-payment.ts
-│   ├── get-payment-history.ts
-│   └── reconcile-daily.ts
-└── in-memory/                           test-only adapters
-    ├── in-memory-idempotency-store.ts
-    ├── in-memory-payment-intent-repository.ts
-    └── in-memory-event-bus.ts
+├── index.ts                                 barrel (exports the 14 use cases)
+└── use_cases/
+    ├── checkout.ts                          InitiateCheckout, ConfirmCheckout, RefundPayment
+    ├── subscription.ts                      Create, Switch, Cancel
+    ├── escrow.ts                            Hold, Release, Dispute
+    ├── payout.ts                            CreatePayout (+ PayoutGatewayPort declaration)
+    ├── webhook.ts                           ProcessWebhook
+    ├── agentic.ts                           HandleAgenticPayment
+    └── reads.ts                             GetPaymentHistory, ReconcileDaily
 ```
+
+Repository ports, registry ports, and the idempotency store are declared
+alongside the use cases that consume them (inside each sub-domain file)
+rather than in a dedicated `ports/` tree — the ports-per-entity split in
+the initial design over-engineered the boundary and added ~7 files without
+a matching increase in clarity. The `IdempotencyPort`, `FXRatePort`,
+`WebhookVerifierPort`, `AgenticPaymentPort`, and `ReconciliationPort` ports
+already declared in `src/domain/ports/` are consumed directly.
+
+In-memory adapters and `errors.ts` are deferred to a follow-up change —
+the tests in `test/application/**` use plain stubs (per-test factory
+helpers), which keeps this change under the file budget and defers the
+cross-cutting error-mapping table until the inbound gRPC layer needs it.
 
 ## Use case shape
 
