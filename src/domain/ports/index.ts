@@ -194,15 +194,52 @@ export interface ProrateResult {
 /**
  * Escrow hold / release / dispute. The `milestone_condition` +
  * `platform_fee_minor` + `platform_fee_destination` fields on `hold` honor
- * the contract documented in `openspec/changes/aduanext-integration-needs/`.
+ * the contract documented in `openspec/changes/aduanext-integration-needs/`
+ * and normatively specced in `openspec/changes/escrow-port/design.md`.
  *
- * Implemented by Stripe Connect, OnvoPay, Tilopay.
+ * Implemented by Stripe Connect, OnvoPay, Tilopay. No runtime adapter ships
+ * with `payments-core` v1; both Stripe and OnvoPay escrow implementations
+ * are P1 follow-up changes.
+ *
+ * State machine (see `src/domain/entities/escrow.ts`):
+ * ```
+ *   held → released
+ *        → refunded
+ *        → disputed → released (payee wins)
+ *                  → refunded (payer wins)
+ * ```
+ *
+ * Partial releases stay in `held` until the final tranche (or a
+ * full-balance release) advances the entity to `released`.
  */
 export interface EscrowPort {
   readonly gateway: GatewayName;
 
+  /**
+   * Accept payer funds into gateway custody. Returns a `gatewayRef` used
+   * for subsequent `release` / `dispute` calls. `milestoneCondition` and
+   * `platformFee*` fields are optional; when present, the adapter binds
+   * the release split and platform-fee destination at hold time.
+   */
   hold(input: HoldEscrowInput): Promise<HoldEscrowResult>;
+
+  /**
+   * Release one tranche (if `milestone` is provided), a partial amount
+   * (if `amount` is provided), or the entire remaining balance (if both
+   * are omitted). `milestone` and `amount` are mutually exclusive per call
+   * — the adapter rejects the combination as `INVALID_INPUT`. Milestones
+   * must be released in the order declared in the original
+   * `MilestoneCondition.milestones` array; ordering is enforced at the
+   * adapter-bookkeeping layer, not in the domain.
+   */
   release(input: ReleaseEscrowInput): Promise<ReleaseEscrowResult>;
+
+  /**
+   * Open a dispute on the escrow. Returns a `disputeId`; subsequent
+   * evidence submission goes through `DisputePort.submitEvidence`, not
+   * through this port. The entity transitions to `disputed` and can only
+   * resolve to `released` or `refunded`.
+   */
   dispute(input: DisputeEscrowInput): Promise<DisputeEscrowResult>;
 }
 

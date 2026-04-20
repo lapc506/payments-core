@@ -42,9 +42,21 @@ export function canTransitionEscrow(from: EscrowStatus, to: EscrowStatus): boole
 }
 
 /**
- * Milestone spec handed to `EscrowPort.hold`. The domain treats every entry
- * as opaque; semantics live with the caller (e.g. AduaNext's `dua_signed`,
- * `levante_received`). Release splits are percentages that sum to 100.
+ * Milestone spec handed to `EscrowPort.hold`.
+ *
+ * - `milestones` are opaque consumer-defined strings. The domain does not
+ *   interpret them; AduaNext uses `"dua_signed"`, `"levante_received"`,
+ *   `"cancelled"`. Renaming a milestone is a breaking change for the
+ *   consumer because in-flight escrows are keyed on the original string.
+ * - `releaseSplit` are whole-number percentages matching `milestones` by
+ *   index. Elements sum to exactly `100` and `releaseSplit.length ===
+ *   milestones.length`.
+ * - Milestones release in array order. Out-of-order calls are rejected by
+ *   the adapter (`INVALID_STATE`); the domain itself is stateless across
+ *   `release` calls and relies on adapter bookkeeping to track ordering.
+ *
+ * See `openspec/changes/escrow-port/design.md` § Milestone conditions for
+ * the normative semantics.
  */
 export interface MilestoneCondition {
   readonly milestones: readonly string[];
@@ -87,6 +99,12 @@ export interface CreateEscrowInput {
  * Construct a fresh Escrow in the `held` state. Escrows are only ever
  * created after the hold has been confirmed by the outbound gateway adapter,
  * so `held` is the only legal initial status.
+ *
+ * `releasedAmount` is initialized to zero in the same currency as `amount`
+ * and accumulates per tranche as `ReleaseEscrow` calls return. The entity
+ * remains in `held` for partial releases; only a full-balance release (or
+ * the final milestone tranche) advances it to `released` via
+ * `transitionEscrow`.
  */
 export function createEscrow(input: CreateEscrowInput): Escrow {
   // `Money.of` returns a real value object with `.add`/`.subtract`/… so the

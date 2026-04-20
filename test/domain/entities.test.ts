@@ -211,6 +211,53 @@ describe('Escrow state machine', () => {
     e = transitionEscrow(e, { to: 'released' });
     expect(e.status).toBe('released');
   });
+
+  // Partial-release + milestone semantics spec'd in
+  // `openspec/changes/escrow-port/design.md` § Milestone conditions and
+  // § State machine. The domain itself is stateless across `release` calls
+  // — these tests pin the contract the application layer (ReleaseEscrow)
+  // and adapter bookkeeping rely on.
+
+  it('initializes releasedAmount to zero in the same currency as amount', () => {
+    const e = base();
+    expect(e.releasedAmount.amountMinor).toBe(0n);
+    expect(e.releasedAmount.currency).toBe(e.amount.currency);
+  });
+
+  it('allows accumulating partial releases on releasedAmount without leaving held', () => {
+    // Simulates what ReleaseEscrow does on each tranche: it accumulates the
+    // released total on the entity while the gateway keeps reporting `held`.
+    // Only a full-balance / final-tranche call advances the status.
+    const e = base();
+    const firstTranche = Money.of(75_000n, 'CRC');
+    const partiallyReleased = { ...e, releasedAmount: e.releasedAmount.add(firstTranche) };
+    expect(partiallyReleased.status).toBe('held');
+    expect(partiallyReleased.releasedAmount.amountMinor).toBe(75_000n);
+
+    const secondTranche = Money.of(75_000n, 'CRC');
+    const fullyAccumulated = {
+      ...partiallyReleased,
+      releasedAmount: partiallyReleased.releasedAmount.add(secondTranche),
+    };
+    expect(fullyAccumulated.releasedAmount.amountMinor).toBe(e.amount.amountMinor);
+
+    const finalized = transitionEscrow(fullyAccumulated, { to: 'released' });
+    expect(finalized.status).toBe('released');
+  });
+
+  it('defaults to no milestone condition and zero platform fee when the contract fields are omitted', () => {
+    const e = createEscrow({
+      id: 'esc_bare',
+      consumer: 'marketplace-core',
+      payerReference: 'buyer-1',
+      payeeReference: 'seller-1',
+      amount: usd(10_000n),
+      idempotencyKey: key,
+    });
+    expect(e.milestoneCondition).toBeNull();
+    expect(e.platformFeeMinor).toBe(0n);
+    expect(e.platformFeeDestination).toBeNull();
+  });
 });
 
 // ---------------------------------------------------------------------------

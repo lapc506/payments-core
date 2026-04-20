@@ -21,3 +21,8 @@ the outside.
 
 Every port page here will document its methods, its error taxonomy, and the
 contract tests adapters must pass.
+
+## Landed port pages
+
+- [EscrowPort](escrow.md) — hold / release / dispute with milestone
+  conditions and platform fees. Reference consumer: AduaNext.

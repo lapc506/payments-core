@@ -136,7 +136,9 @@ nav:
   - Home: index.md
   - Governance: docs/governance/index.md
   - Architecture: docs/architecture/index.md
-  - Ports: docs/ports/index.md
+  - Ports:
+    - Overview: docs/ports/index.md
+    - EscrowPort: docs/ports/escrow.md
   - Adapters:
     - Overview: docs/adapters/index.md
     - Stripe: docs/adapters/stripe.md
