@@ -25,7 +25,7 @@
 import { DisputeOngoingError, InvalidStateTransitionError } from '../errors.js';
 import type { GatewayRef } from '../value_objects/opaque-refs.js';
 import type { IdempotencyKey } from '../value_objects/idempotency-key.js';
-import type { Money } from '../value_objects/money.js';
+import { Money } from '../value_objects/money.js';
 
 export type EscrowStatus = 'held' | 'released' | 'refunded' | 'disputed';
 
@@ -89,7 +89,11 @@ export interface CreateEscrowInput {
  * so `held` is the only legal initial status.
  */
 export function createEscrow(input: CreateEscrowInput): Escrow {
-  const zero = { amountMinor: 0n, currency: input.amount.currency } as Money;
+  // `Money.of` returns a real value object with `.add`/`.subtract`/… so the
+  // escrow's `releasedAmount` is usable by downstream accumulators without a
+  // rebuild. Earlier versions cast a plain literal which stripped the
+  // prototype — see ReleaseEscrow history for the workaround this replaces.
+  const zero = Money.of(0n, input.amount.currency);
   return {
     id: input.id,
     consumer: input.consumer,

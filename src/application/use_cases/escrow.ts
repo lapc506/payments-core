@@ -11,7 +11,6 @@
 // =============================================================================
 
 import {
-  Money,
   createEscrow,
   transitionEscrow,
   DisputeOngoingError,
@@ -26,6 +25,7 @@ import {
   type IdempotencyKey,
   type IdempotencyPort,
   type MilestoneCondition,
+  type Money,
   type Result,
 } from '../../domain/index.js';
 
@@ -194,14 +194,9 @@ export const makeReleaseEscrow =
     // settled. For partial releases, the gateway replies with
     // `status === 'held'` and the escrow stays in the same state.
     const advanced = applyEscrowStatus(existing, gatewayResult.status);
-    // The domain's `createEscrow` initializes `releasedAmount` as a plain
-    // object literal rather than a real `Money` instance, so `.add()` is
-    // unavailable. We sum amounts directly and rebuild the `Money` via the
-    // smart constructor to restore instance methods.
-    const releasedAccum = Money.of(
-      existing.releasedAmount.amountMinor + gatewayResult.releasedAmount.amountMinor,
-      existing.releasedAmount.currency,
-    );
+    // `createEscrow` now returns a real `Money` instance for `releasedAmount`,
+    // so `.add()` is safe. Cross-currency addition throws inside the VO.
+    const releasedAccum = existing.releasedAmount.add(gatewayResult.releasedAmount);
     const persisted: Escrow = { ...advanced, releasedAmount: releasedAccum };
     await deps.repo.save(persisted);
     const out: ReleaseEscrowOutput = {

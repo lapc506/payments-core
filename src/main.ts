@@ -1,14 +1,19 @@
 // =============================================================================
 // Entry point — payments-core sidecar.
 // -----------------------------------------------------------------------------
-// Reads env, wires a use-case container against STUB ports (real adapters
-// land in issues #20/#21), starts the gRPC server on `0.0.0.0:${GRPC_PORT}`,
-// and installs SIGTERM/SIGINT handlers for graceful shutdown.
+// Reads env, wires a use-case container against real outbound adapters where
+// env-provided credentials allow (`stripe`, `onvopay` for payments,
+// subscriptions, and webhook verification) and falls back to `UNAVAILABLE`
+// stubs for every other gateway or port that lacks a real implementation
+// (`EscrowPort`, `PayoutPort`, `AgenticPaymentPort`, `ReconciliationPort`,
+// `FXRatePort`). Starts the gRPC server on `0.0.0.0:${GRPC_PORT}` and
+// installs SIGTERM/SIGINT handlers for graceful shutdown.
 //
-// The stub ports return `GatewayUnavailableError` on every mutating call so
-// the sidecar is honest about what v1 can do. The server is still useful:
-// callers can probe it, run health checks, and observe the full proto
-// contract via reflection-compatible tooling (grpcurl with a descriptor set).
+// Missing adapter env vars are NOT fatal. The sidecar boots with a minimal
+// set; requests for an unconfigured gateway surface
+// `GatewayUnavailableError(gateway, 'not configured')` and translate to
+// gRPC `UNAVAILABLE`. Local dev environments without real secrets keep
+// working exactly as before.
 // =============================================================================
 
 import { randomUUID } from 'node:crypto';
@@ -53,6 +58,13 @@ import {
 } from './application/index.js';
 import { createServer } from './adapters/inbound/grpc/server.js';
 import { HealthService, ServingStatus } from './adapters/inbound/grpc/health.js';
+import {
+  type AdapterEnv,
+  buildPaymentGatewayRegistry,
+  buildSubscriptionPortRegistry,
+  buildWebhookVerifierRegistry,
+  makeResolver,
+} from './main/gateway-registry.js';
 
 // ---------------------------------------------------------------------------
 // Env parsing — refuse to start if required values are missing or malformed.
@@ -62,6 +74,7 @@ interface Env {
   readonly grpcPort: number;
   readonly logLevel: pino.Level;
   readonly shutdownDeadlineMs: number;
+  readonly adapters: AdapterEnv;
 }
 
 function loadEnv(): Env {
@@ -87,40 +100,59 @@ function loadEnv(): Env {
   if (!Number.isFinite(deadline) || deadline <= 0) {
     throw new Error(`SHUTDOWN_DEADLINE_MS must be > 0; got '${deadlineRaw}'`);
   }
-  return { grpcPort: port, logLevel, shutdownDeadlineMs: deadline };
+  // Adapter env vars are optional at the process level. Unset values mean
+  // the corresponding gateway will not be registered; requests for it return
+  // `UNAVAILABLE` until secrets are provided.
+  const adapters: AdapterEnv = {
+    ...(process.env['STRIPE_SECRET_KEY'] !== undefined
+      ? { stripeSecretKey: process.env['STRIPE_SECRET_KEY'] }
+      : {}),
+    ...(process.env['STRIPE_WEBHOOK_SIGNING_SECRET'] !== undefined
+      ? { stripeWebhookSigningSecret: process.env['STRIPE_WEBHOOK_SIGNING_SECRET'] }
+      : {}),
+    ...(process.env['ONVOPAY_API_KEY'] !== undefined
+      ? { onvopayApiKey: process.env['ONVOPAY_API_KEY'] }
+      : {}),
+    ...(process.env['ONVOPAY_API_BASE_URL'] !== undefined
+      ? { onvopayApiBaseUrl: process.env['ONVOPAY_API_BASE_URL'] }
+      : {}),
+    ...(process.env['ONVOPAY_WEBHOOK_SIGNING_SECRET'] !== undefined
+      ? {
+          onvopayWebhookSigningSecret:
+            process.env['ONVOPAY_WEBHOOK_SIGNING_SECRET'],
+        }
+      : {}),
+  };
+  return {
+    grpcPort: port,
+    logLevel,
+    shutdownDeadlineMs: deadline,
+    adapters,
+  };
 }
 
 // ---------------------------------------------------------------------------
 // Stub port implementations
 // -----------------------------------------------------------------------------
-// Every stub throws `GatewayUnavailableError`; the server maps that to gRPC
-// `UNAVAILABLE`, which is the correct signal to callers ("capability not
-// live yet"). Stubs are identity-tagged `'stripe'` so failure messages carry
-// a concrete gateway name.
+// Retained only for ports that do NOT have a real outbound adapter yet
+// (`EscrowPort`, `PayoutPort`, `AgenticPaymentPort`, `ReconciliationPort`,
+// `FXRatePort`). Each throws `GatewayUnavailableError`, which the inbound
+// gRPC translator maps to `UNAVAILABLE`. Ports that DO have adapters
+// (`PaymentGatewayPort`, `SubscriptionPort`, `WebhookVerifierPort`) are
+// served by the registry; their per-gateway stub, used when the requested
+// gateway has no env credentials, lives in `buildUseCasesInternal`.
 // ---------------------------------------------------------------------------
 
 const STUB_GATEWAY: GatewayName = 'stripe';
-const STUB_REASON = 'stub port: real adapter pending (see issues #20/#21)';
+const STUB_REASON = 'stub port: real adapter pending';
 
 function unavailable(): never {
   throw new GatewayUnavailableError(STUB_GATEWAY, STUB_REASON);
 }
 
-const stubPaymentGateway: PaymentGatewayPort = {
-  gateway: STUB_GATEWAY,
-  initiate: () => unavailable(),
-  confirm: () => unavailable(),
-  capture: () => unavailable(),
-  refund: () => unavailable(),
-};
-
-const stubSubscriptionGateway: SubscriptionPort = {
-  gateway: STUB_GATEWAY,
-  create: () => unavailable(),
-  switch: () => unavailable(),
-  cancel: () => unavailable(),
-  prorate: () => unavailable(),
-};
+function unavailableFor(gateway: GatewayName): never {
+  throw new GatewayUnavailableError(gateway, 'not configured');
+}
 
 const stubEscrowGateway: EscrowPort = {
   gateway: STUB_GATEWAY,
@@ -132,11 +164,6 @@ const stubEscrowGateway: EscrowPort = {
 const stubPayoutGateway: PayoutGatewayPort = {
   gateway: STUB_GATEWAY,
   createPayout: () => unavailable(),
-};
-
-const stubWebhookVerifier: WebhookVerifierPort = {
-  gateway: STUB_GATEWAY,
-  verify: () => unavailable(),
 };
 
 const stubAgentic: AgenticPaymentPort = {
@@ -151,6 +178,36 @@ const stubReconciliation: ReconciliationPort = {
 const stubFx: FXRatePort = {
   lookup: () => unavailable(),
 };
+
+// Per-gateway stubs for the three wired ports. Only constructed when a
+// caller asks for a gateway that hasn't been registered; the stub carries
+// the requested gateway name so the error message is accurate.
+function stubPaymentGatewayFor(gateway: GatewayName): PaymentGatewayPort {
+  return {
+    gateway,
+    initiate: () => unavailableFor(gateway),
+    confirm: () => unavailableFor(gateway),
+    capture: () => unavailableFor(gateway),
+    refund: () => unavailableFor(gateway),
+  };
+}
+
+function stubSubscriptionPortFor(gateway: GatewayName): SubscriptionPort {
+  return {
+    gateway,
+    create: () => unavailableFor(gateway),
+    switch: () => unavailableFor(gateway),
+    cancel: () => unavailableFor(gateway),
+    prorate: () => unavailableFor(gateway),
+  };
+}
+
+function stubWebhookVerifierFor(gateway: GatewayName): WebhookVerifierPort {
+  return {
+    gateway,
+    verify: () => unavailableFor(gateway),
+  };
+}
 
 // ---------------------------------------------------------------------------
 // In-memory stores (swap for real infra in a later change)
@@ -215,23 +272,40 @@ class InMemoryPayoutRepo {
 // Wire + start
 // ---------------------------------------------------------------------------
 
-function buildUseCases(): ReturnType<typeof buildUseCasesInternal> {
-  return buildUseCasesInternal();
+export function buildUseCases(
+  env: AdapterEnv,
+): ReturnType<typeof buildUseCasesInternal> {
+  return buildUseCasesInternal(env);
 }
 
-function buildUseCasesInternal() {
+function buildUseCasesInternal(env: AdapterEnv) {
   const idempotency = new InMemoryIdempotency();
   const intentRepo = new InMemoryPaymentIntentRepo();
   const subRepo = new InMemorySubscriptionRepo();
   const escrowRepo = new InMemoryEscrowRepo();
   const payoutRepo = new InMemoryPayoutRepo();
 
+  // Real adapters constructed from env; unconfigured gateways fall through
+  // to per-gateway stubs that return `UNAVAILABLE` on every call.
+  const paymentRegistry = buildPaymentGatewayRegistry(env);
+  const subscriptionRegistry = buildSubscriptionPortRegistry(env);
+  const webhookVerifierRegistry = buildWebhookVerifierRegistry(env, idempotency);
+
+  const resolvePayment = makeResolver(paymentRegistry, stubPaymentGatewayFor);
+  const resolveSubscription = makeResolver(
+    subscriptionRegistry,
+    stubSubscriptionPortFor,
+  );
+  const resolveVerifier = makeResolver(
+    webhookVerifierRegistry,
+    stubWebhookVerifierFor,
+  );
+
   const paymentGateways = {
-    resolvePaymentGateway: (_g: GatewayName): PaymentGatewayPort => stubPaymentGateway,
+    resolvePaymentGateway: resolvePayment,
   };
   const subscriptionGateways = {
-    resolveSubscriptionGateway: (_g: GatewayName): SubscriptionPort =>
-      stubSubscriptionGateway,
+    resolveSubscriptionGateway: resolveSubscription,
   };
   const escrowGateways = {
     resolveEscrowGateway: (_g: GatewayName): EscrowPort => stubEscrowGateway,
@@ -240,7 +314,7 @@ function buildUseCasesInternal() {
     resolvePayoutGateway: (_g: GatewayName): PayoutGatewayPort => stubPayoutGateway,
   };
   const verifierRegistry = {
-    resolveVerifier: (_g: GatewayName): WebhookVerifierPort => stubWebhookVerifier,
+    resolveVerifier,
   };
   const reconciliationRegistry = {
     listReconciliationPorts: (): readonly ReconciliationPort[] => [stubReconciliation],
@@ -326,7 +400,7 @@ void createGatewayRef;
 export async function main(): Promise<void> {
   const env = loadEnv();
   const logger = pino({ level: env.logLevel });
-  const useCases = buildUseCases();
+  const useCases = buildUseCases(env.adapters);
   const health = new HealthService(ServingStatus.NOT_SERVING);
 
   const { server } = createServer({
