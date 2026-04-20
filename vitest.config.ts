@@ -4,7 +4,10 @@ export default defineConfig({
   test: {
     include: ['test/**/*.{test,spec}.ts', 'src/**/*.{test,spec}.ts'],
     coverage: {
-      reporter: ['text-summary'],
+      provider: 'v8',
+      reporter: ['text-summary', 'lcov'],
+      include: ['src/**/*.ts'],
+      exclude: ['src/generated/**', 'src/main.ts'],
     },
   },
 });

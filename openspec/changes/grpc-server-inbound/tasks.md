@@ -104,3 +104,12 @@
 - [ ] The generated Docker image is available at `ghcr.io/lapc506/payments-core:<first-tag>` after the first version tag is pushed.
 - [ ] Consumer repos can now wire a sidecar using `k8s/sidecar.example.yaml` as a reference.
 - [ ] `stripe-adapter-p0` and `onvopay-adapter-p0` drop their temporary `FakePaymentGateway` registrations from `main.ts` as they land.
+
+## Post-merge cleanup (landed in PR #41)
+
+Post-ola-final housekeeping bundled into a single micro-PR after the Stripe + OnvoPay adapters landed:
+
+- [x] Orphan local branch `docs/expand-openspec-change-stubs` (merged via PR #3) deleted from the maintainer's worktree. Remote state was already clean.
+- [x] Fixed `createEscrow` in `src/domain/entities/escrow.ts`: `releasedAmount` is now built via `Money.of(...)` so the returned entity carries a real `Money` instance with its prototype intact. The workaround in `ReleaseEscrow` that rebuilt the `Money` before calling `.add()` was removed.
+- [x] Added `@vitest/coverage-v8` as a devDependency (matches pinned `vitest@^1.6.0`). `vitest.config.ts` now declares the `v8` provider and emits `text-summary` + `lcov`, so `pnpm test -- --coverage` produces `coverage/lcov.info` consumable by CI reporters. Coverage thresholds are intentionally NOT enforced yet — that is a separate follow-up.
+- [x] `src/main.ts` replaced the `stub port: real adapter pending` wires for `PaymentGatewayPort`, `SubscriptionPort`, and `WebhookVerifierPort` with a `GatewayRegistry` (new helper in `src/main/gateway-registry.ts`). The registry constructs Stripe and OnvoPay adapters from env-supplied secrets; when a gateway has no credentials configured, requests for it return `GatewayUnavailableError(<gateway>, 'not configured')`, which the inbound translator maps to gRPC `UNAVAILABLE`. `EscrowPort`, `PayoutPort`, `AgenticPaymentPort`, `ReconciliationPort`, and `FXRatePort` keep their stub fallbacks — they do not have real adapters yet.
