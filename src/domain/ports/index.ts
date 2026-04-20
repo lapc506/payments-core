@@ -15,7 +15,7 @@
 // `pg`, `node-fetch`, or anything with I/O. Ports are pure interfaces.
 // =============================================================================
 
-import type { Dispute } from '../entities/simple-entities.js';
+import type { Dispute, Donation } from '../entities/simple-entities.js';
 import type { Escrow, MilestoneCondition } from '../entities/escrow.js';
 import type { GatewayName, GatewayRef, ThreeDSChallenge } from '../value_objects/opaque-refs.js';
 import type { IdempotencyKey } from '../value_objects/idempotency-key.js';
@@ -400,6 +400,114 @@ export interface SubmitDisputeEvidenceInput {
 export interface SubmitDisputeEvidenceResult {
   readonly gatewayRef: GatewayRef;
   readonly status: Dispute['status'];
+}
+
+// ---------------------------------------------------------------------------
+// 10. DonationPort — one-time + recurring donations for altrupets-api et al.
+// ---------------------------------------------------------------------------
+
+/**
+ * Donations are distinct from generic `PaymentGatewayPort.initiate` because
+ * they carry donation-specific semantics: a `campaignId` metadata hook
+ * (opaque to payments-core, owned by the consumer backend), a recurrence
+ * specification for monthly/yearly giving, and donor-visibility flags that
+ * gate receipt-email delivery on the gateway side.
+ *
+ * Implementations are thin wrappers around the gateway's charge/subscription
+ * surfaces that tag the outbound metadata map with donation markers. See
+ * `openspec/changes/donations-port/` for the full rationale and the
+ * `crowdfunding-deferred` cross-reference.
+ */
+export interface DonationPort {
+  readonly gateway: GatewayName;
+
+  /**
+   * One-shot donation. Returns the donation id assigned by payments-core
+   * and the gateway's opaque external reference.
+   */
+  initiateOneTime(input: InitiateOneTimeDonationInput): Promise<InitiateDonationResult>;
+
+  /**
+   * Sets up a recurring donation schedule on the gateway. The first charge
+   * may happen synchronously or asynchronously depending on the gateway;
+   * the returned `gatewayRef` is the gateway's recurring-plan id, reusable
+   * as the handle passed to `pauseRecurring` / `cancelRecurring`.
+   */
+  initiateRecurring(input: InitiateRecurringDonationInput): Promise<InitiateDonationResult>;
+
+  /**
+   * Pauses an active recurring donation. Idempotent by `idempotencyKey`:
+   * pausing an already-paused schedule is a no-op and resolves successfully.
+   */
+  pauseRecurring(gatewayRef: GatewayRef, idempotencyKey: IdempotencyKey): Promise<void>;
+
+  /**
+   * Cancels a recurring donation. Idempotent by `idempotencyKey`: cancelling
+   * an already-cancelled schedule is a no-op and resolves successfully.
+   * The consumer backend still retains the historical `Donation` records.
+   */
+  cancelRecurring(gatewayRef: GatewayRef, idempotencyKey: IdempotencyKey): Promise<void>;
+}
+
+/**
+ * Interval specification for recurring donations. `custom.daysBetween` lets
+ * consumers request cadences the gateway does not model natively (the
+ * adapter maps it to the nearest supported period or raises
+ * `GatewayUnsupportedFeature` if the gateway rejects it).
+ */
+export type DonationRecurrence =
+  | { readonly interval: 'month'; readonly count: 1 }
+  | { readonly interval: 'year'; readonly count: 1 }
+  | { readonly interval: 'custom'; readonly daysBetween: number };
+
+export type DonorVisibility = 'anonymous' | 'public' | 'pseudonymous';
+
+export interface InitiateOneTimeDonationInput {
+  readonly amount: Money;
+  readonly consumer: string;
+  readonly donorReference: string;
+  /**
+   * Opaque campaign id. AltruPets attaches its own cause id here. Empty
+   * string means "no campaign"; callers that have no campaign pass `null`
+   * which the application layer coerces to empty before calling the port.
+   */
+  readonly campaignId: string | null;
+  readonly donorVisibility: DonorVisibility;
+  readonly idempotencyKey: IdempotencyKey;
+  readonly metadata: Readonly<Record<string, string>>;
+  readonly returnUrl?: string;
+  readonly cancelUrl?: string;
+}
+
+export interface InitiateRecurringDonationInput {
+  readonly amount: Money;
+  readonly consumer: string;
+  readonly donorReference: string;
+  readonly campaignId: string | null;
+  readonly donorVisibility: DonorVisibility;
+  readonly recurrence: DonationRecurrence;
+  readonly idempotencyKey: IdempotencyKey;
+  readonly metadata: Readonly<Record<string, string>>;
+  readonly returnUrl?: string;
+  readonly cancelUrl?: string;
+}
+
+export interface InitiateDonationResult {
+  readonly donationId: string;
+  readonly gatewayRef: GatewayRef;
+  readonly requiresAction: boolean;
+  readonly challenge?: ThreeDSChallenge;
+  readonly checkoutUrl?: string;
+}
+
+/**
+ * Compact reference returned by the donation use cases. The `gatewayRef`
+ * is the handle callers must present to pause/cancel a recurring donation.
+ */
+export interface DonationRef {
+  readonly donationId: string;
+  readonly gatewayRef: GatewayRef;
+  readonly kind: Donation['kind'];
 }
 
 // ---------------------------------------------------------------------------
