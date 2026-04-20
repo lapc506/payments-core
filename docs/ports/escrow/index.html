@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://lapc506.github.io/payments-core/docs/api/reference/">
+        <link rel="canonical" href="https://lapc506.github.io/payments-core/docs/ports/escrow/">
       
       
         <link rel="prev" href="../">
       
       
-        <link rel="next" href="../../references/">
+        <link rel="next" href="../../adapters/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Reference - payments-core</title>
+        <title>EscrowPort - payments-core</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api-reference" class="md-skip">
+        <a href="#escrowport" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Reference
+              EscrowPort
             
           </span>
         </div>
@@ -283,11 +283,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../ports/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   
@@ -390,13 +392,11 @@
   
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="../" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../../api/" class="md-tabs__link">
           
   
   
@@ -603,6 +603,8 @@
       
   
   
+    
+  
   
   
     
@@ -618,22 +620,23 @@
     
     
       
+        
+        
+      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../ports/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   
@@ -651,13 +654,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -674,10 +677,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../ports/escrow/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EscrowPort
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -693,6 +723,127 @@
   
 
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-port-does" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the port does
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#state-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State machine
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone contract
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#platform-fee-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Platform fee contract
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consumer-reference-aduanext" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consumer reference — AduaNext
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adapter-support-matrix-target-for-v1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adapter support matrix (target for v1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disputes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Disputes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known limitations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1163,8 +1314,6 @@
       
   
   
-    
-  
   
   
     
@@ -1180,23 +1329,22 @@
     
     
       
-        
-        
-      
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
         
           
           <div class="md-nav__link md-nav__container">
-            <a href="../" class="md-nav__link ">
+            <a href="../../api/" class="md-nav__link ">
               
   
   
@@ -1214,13 +1362,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="">
+              <label class="md-nav__link " for="__nav_9" id="__nav_9_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_9">
             <span class="md-nav__icon md-icon"></span>
             
@@ -1237,19 +1385,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../api/reference/" class="md-nav__link">
         
   
   
@@ -1265,7 +1404,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -1381,6 +1519,113 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-the-port-does" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What the port does
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#state-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State machine
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#milestone-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Milestone contract
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#platform-fee-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Platform fee contract
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consumer-reference-aduanext" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consumer reference — AduaNext
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adapter-support-matrix-target-for-v1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adapter support matrix (target for v1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disputes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Disputes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#known-limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Known limitations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1425,7 +1670,7 @@
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    API
+    Ports
   </span>
 
         </a>
@@ -1444,7 +1689,7 @@
 
 
   
-    <a href="https://github.com/lapc506/payments-core/edit/main/docs/content/docs/api/reference.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+    <a href="https://github.com/lapc506/payments-core/edit/main/docs/content/docs/ports/escrow.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75z"/></svg>
     </a>
@@ -1453,26 +1698,250 @@
     
       
     
-    <a href="https://github.com/lapc506/payments-core/raw/main/docs/content/docs/api/reference.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/lapc506/payments-core/raw/main/docs/content/docs/ports/escrow.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5"/></svg>
     </a>
   
 
 
-<h1 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
-<p>Interactive renderer for the <code>payments-core</code> OpenAPI descriptor. The
-descriptor is mirrored from the protobuf contract in <a href="https://github.com/lapc506/payments-core/tree/main/proto"><code>proto/</code></a>
-and lives at <a href="https://github.com/lapc506/payments-core/blob/main/openapi/payments_core.yaml"><code>openapi/payments_core.yaml</code></a>.
-It is regenerated from the proto via <code>pnpm proto:generate</code>; do not hand-edit
-the YAML.</p>
-<div>
-<elements-api
-  apiDescriptionUrl="/payments-core/openapi/payments_core.yaml"
-  router="hash"
-  layout="sidebar"
-></elements-api>
+<h1 id="escrowport">EscrowPort<a class="headerlink" href="#escrowport" title="Permanent link">&para;</a></h1>
+<p><code>EscrowPort</code> models funds held by a third-party gateway until a release
+condition is met. It was sketched in <code>domain-skeleton</code> (PR <a class="magiclink magiclink-github magiclink-issue" href="https://github.com/lapc506/payments-core/issues/22" title="GitHub Issue: lapc506/payments-core #22">#22</a>) and wired
+into use cases in <code>application-use-cases</code> (PR <a class="magiclink magiclink-github magiclink-issue" href="https://github.com/lapc506/payments-core/issues/23" title="GitHub Issue: lapc506/payments-core #23">#23</a>). This page is the
+reader-facing contract.</p>
+<div class="admonition note">
+<p class="admonition-title">Status: interface landed, no runtime adapter yet</p>
+<p>The port interface, the <code>Escrow</code> entity, and the <code>HoldEscrow</code> /
+<code>ReleaseEscrow</code> / <code>DisputeEscrow</code> use cases are in-tree. <strong>No runtime
+adapter implements <code>EscrowPort</code> today.</strong> Stripe Connect and OnvoPay
+escrow adapters are tracked as P1 follow-ups in
+<a href="https://github.com/lapc506/payments-core/tree/main/openspec/changes/stripe-adapter-p0"><code>stripe-adapter-p0</code></a>
+and
+<a href="https://github.com/lapc506/payments-core/tree/main/openspec/changes/onvopay-adapter-p0"><code>onvopay-adapter-p0</code></a>.
+Stubs throw <code>UNAVAILABLE</code> until their respective changes land.</p>
 </div>
+<h2 id="what-the-port-does">What the port does<a class="headerlink" href="#what-the-port-does" title="Permanent link">&para;</a></h2>
+<p>Three operations:</p>
+<div class="language-ts highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">interface</span><span class="w"> </span><span class="nx">EscrowPort</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nx">hold</span><span class="p">(</span><span class="nx">input</span><span class="o">:</span><span class="w"> </span><span class="kt">HoldEscrowInput</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">HoldEscrowResult</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nx">release</span><span class="p">(</span><span class="nx">input</span><span class="o">:</span><span class="w"> </span><span class="kt">ReleaseEscrowInput</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">ReleaseEscrowResult</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nx">dispute</span><span class="p">(</span><span class="nx">input</span><span class="o">:</span><span class="w"> </span><span class="kt">DisputeEscrowInput</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="nb">Promise</span><span class="o">&lt;</span><span class="nx">DisputeEscrowResult</span><span class="o">&gt;</span><span class="p">;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Responsibility</th>
+<th>State transition</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hold</code></td>
+<td>Accept payer funds, hold them in gateway custody.</td>
+<td><code>∅ → held</code></td>
+</tr>
+<tr>
+<td><code>release</code></td>
+<td>Release one tranche (by milestone) or a partial amount to the payee.</td>
+<td><code>held → held \| released</code></td>
+</tr>
+<tr>
+<td><code>dispute</code></td>
+<td>Open a dispute against the escrow; evidence via <code>DisputePort</code>.</td>
+<td><code>held → disputed</code></td>
+</tr>
+</tbody>
+</table>
+<p>Refunds from a disputed escrow use the standard <code>PaymentGatewayPort.refund</code>
+or dispute-resolution webhook path; the entity transitions
+<code>disputed → refunded</code> when the resolution lands.</p>
+<h2 id="state-machine">State machine<a class="headerlink" href="#state-machine" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>held ──► released
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>     ├─► refunded
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>     └─► disputed ──► released   (payee wins)
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>                  └─► refunded   (payer wins)
+</span></code></pre></div>
+<p>Enforced by <code>transitionEscrow</code> in <code>src/domain/entities/escrow.ts</code>. Key
+invariants:</p>
+<ul>
+<li><code>held</code> is the only legal initial status (built by <code>createEscrow</code>).</li>
+<li><code>released</code> and <code>refunded</code> are terminal.</li>
+<li>From <code>disputed</code> only <code>released</code> or <code>refunded</code> are legal; anything else
+  raises <code>DisputeOngoingError</code> so the failure mode is operationally distinct
+  from generic illegal transitions.</li>
+<li>Partial releases do <strong>not</strong> advance status. The entity stays <code>held</code>; the
+  gateway reports <code>status: 'held'</code> per tranche. Only the final tranche (or a
+  full-balance release) advances to <code>released</code>.</li>
+</ul>
+<h2 id="milestone-contract">Milestone contract<a class="headerlink" href="#milestone-contract" title="Permanent link">&para;</a></h2>
+<div class="language-ts highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">interface</span><span class="w"> </span><span class="nx">MilestoneCondition</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="k">readonly</span><span class="w"> </span><span class="nx">milestones</span><span class="o">:</span><span class="w"> </span><span class="kt">readonly</span><span class="w"> </span><span class="kt">string</span><span class="p">[];</span><span class="w">     </span><span class="c1">// opaque consumer-defined</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="k">readonly</span><span class="w"> </span><span class="nx">releaseSplit</span><span class="o">:</span><span class="w"> </span><span class="kt">readonly</span><span class="w"> </span><span class="kt">number</span><span class="p">[];</span><span class="w">   </span><span class="c1">// percentages; sum === 100</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">}</span>
+</span></code></pre></div>
+<ul>
+<li><strong>Opaque strings.</strong> The domain does not interpret milestone strings.
+  AduaNext publishes its own taxonomy (<code>"dua_signed"</code>,
+  <code>"levante_received"</code>, <code>"cancelled"</code>); other consumers define their own.</li>
+<li><strong>Percentage split.</strong> <code>releaseSplit[i]</code> is a whole-number percentage.
+  Elements sum to <code>100</code> and <code>releaseSplit.length === milestones.length</code>.</li>
+<li><strong>Order.</strong> Milestones release in order. Calling <code>release</code> with
+  <code>milestones[2]</code> before <code>milestones[1]</code> is an <code>INVALID_STATE</code> error surfaced
+  by the adapter. The domain is stateless across calls — ordering is enforced
+  by the adapter's bookkeeping layer.</li>
+<li><strong>Full-balance release.</strong> Calling <code>release</code> with no <code>milestone</code> and no
+  <code>amount</code> releases the entire remaining balance in one call.</li>
+<li><strong>By-amount release.</strong> Calling <code>release</code> with an explicit <code>amount</code> and no
+  <code>milestone</code> works for gateways that model custody by amount rather than by
+  milestone (XRPL). <code>milestone</code> and <code>amount</code> are mutually exclusive per
+  call.</li>
+</ul>
+<h2 id="platform-fee-contract">Platform fee contract<a class="headerlink" href="#platform-fee-contract" title="Permanent link">&para;</a></h2>
+<div class="language-ts highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kd">interface</span><span class="w"> </span><span class="nx">HoldEscrowInput</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="c1">// ...</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="k">readonly</span><span class="w"> </span><span class="nx">platformFeeMinor?</span><span class="o">:</span><span class="w"> </span><span class="kt">bigint</span><span class="p">;</span><span class="w">         </span><span class="c1">// same currency as `amount`</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="k">readonly</span><span class="w"> </span><span class="nx">platformFeeDestination?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span><span class="w">   </span><span class="c1">// gateway-native account id</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<ul>
+<li><code>platformFeeMinor</code> is in the same currency as <code>amount</code>. Cross-currency is
+  rejected at the port contract level (<code>CURRENCY_MISMATCH</code>).</li>
+<li><code>platformFeeDestination</code> is gateway-native — Stripe Connect <code>acct_*</code>,
+  OnvoPay account id. The domain stores it as an opaque string.</li>
+<li><strong>Default allocation</strong>: fee deducted proportionally to the release split.
+  Stripe Connect accounts requiring all-fee-on-first-release override this
+  policy; the adapter documents the override in its own proposal.</li>
+<li><strong>Rounding residue</strong>: absorbed by the final tranche so deducted fees sum
+  exactly to <code>platformFeeMinor</code>.</li>
+</ul>
+<h2 id="consumer-reference-aduanext">Consumer reference — AduaNext<a class="headerlink" href="#consumer-reference-aduanext" title="Permanent link">&para;</a></h2>
+<p>AduaNext's Flow A (broker escrow) and Flow F (platform fees) are the
+reference consumer. See
+<a href="../../integrations/consumers/aduanext/">integrations/consumers/aduanext.md</a>
+for the full walkthrough. Short version:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>HoldEscrow {
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  amount: { amount_minor: 150000, currency: &quot;CRC&quot; }
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  milestone_condition: {
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    milestones: [&quot;dua_signed&quot;, &quot;levante_received&quot;]
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    release_split: [50, 50]
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>  }
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>  platform_fee_minor: 15000
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>  platform_fee_destination: &quot;aduanext-platform-account&quot;
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>}
+</span></code></pre></div>
+<h2 id="adapter-support-matrix-target-for-v1">Adapter support matrix (target for v1)<a class="headerlink" href="#adapter-support-matrix-target-for-v1" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Gateway</th>
+<th style="text-align: center;"><code>hold</code></th>
+<th style="text-align: center;"><code>release</code> full</th>
+<th style="text-align: center;"><code>release</code> split</th>
+<th style="text-align: center;"><code>platform_fee_*</code></th>
+<th style="text-align: center;"><code>dispute</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Stripe</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+</tr>
+<tr>
+<td>OnvoPay</td>
+<td style="text-align: center;">TBD</td>
+<td style="text-align: center;">TBD</td>
+<td style="text-align: center;">limited (bookkeeping)</td>
+<td style="text-align: center;">TBD</td>
+<td style="text-align: center;">TBD</td>
+</tr>
+<tr>
+<td>Tilopay (P1)</td>
+<td style="text-align: center;">TBD</td>
+<td style="text-align: center;">TBD</td>
+<td style="text-align: center;">bookkeeping</td>
+<td style="text-align: center;">TBD</td>
+<td style="text-align: center;">TBD</td>
+</tr>
+<tr>
+<td>dLocal (P2)</td>
+<td style="text-align: center;">def.</td>
+<td style="text-align: center;">def.</td>
+<td style="text-align: center;">def.</td>
+<td style="text-align: center;">def.</td>
+<td style="text-align: center;">def.</td>
+</tr>
+<tr>
+<td>Revolut</td>
+<td style="text-align: center;">likely</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">limited</td>
+<td style="text-align: center;">limited</td>
+</tr>
+<tr>
+<td>Convera</td>
+<td style="text-align: center;">limited</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">no</td>
+<td style="text-align: center;">no</td>
+<td style="text-align: center;">limited</td>
+</tr>
+<tr>
+<td>Ripple-XRPL</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">yes</td>
+<td style="text-align: center;">no</td>
+<td style="text-align: center;">no</td>
+<td style="text-align: center;">n/a</td>
+</tr>
+</tbody>
+</table>
+<p><em><code>def.</code> = deferred. Gateways that cannot split releases natively implement
+splits via <strong>adapter-side bookkeeping</strong>: the adapter holds the full sum in
+the gateway and emits a sequence of idempotent internal transfers per
+release, each tracked in <code>payments-core</code>'s own ledger.</em></p>
+<h2 id="disputes">Disputes<a class="headerlink" href="#disputes" title="Permanent link">&para;</a></h2>
+<p><code>EscrowPort.dispute</code> opens a dispute against the gateway and returns a
+<code>disputeId</code>. Evidence submission goes through
+<a href="../"><code>DisputePort.submitEvidence</code></a> — the split exists because
+card-issuer chargebacks and escrow disputes share the evidence flow but
+differ in how the dispute is opened.</p>
+<h2 id="known-limitations">Known limitations<a class="headerlink" href="#known-limitations" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>No adapter implements <code>EscrowPort</code> today.</strong> Registry resolution to an
+  escrow gateway throws <code>UNAVAILABLE</code> until the Stripe Connect escrow
+  adapter and the OnvoPay escrow adapter land.</li>
+<li><strong>No arbiter / third-party mediator flows.</strong> Either party initiates
+  release via the consumer backend, or disputes go through the gateway's
+  native dispute flow. See
+  <a href="https://github.com/lapc506/payments-core/tree/main/openspec/changes/escrow-port/proposal.md"><code>proposal.md</code></a>
+  § Out of scope.</li>
+<li><strong>Single-currency escrow.</strong> Escrow holds one currency. Cross-currency
+  holding is handled one layer higher (FX port).</li>
+<li><strong>No fractional release by arbitrary amount with milestones.</strong> Partial
+  releases are either percentage-based (via <code>milestoneCondition</code>) or
+  amount-based (raw <code>amount</code> on <code>release</code>). They do not compose.</li>
+</ul>
+<h2 id="related">Related<a class="headerlink" href="#related" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://github.com/lapc506/payments-core/tree/main/openspec/changes/escrow-port/proposal.md"><code>openspec/changes/escrow-port/proposal.md</code></a>
+  — original proposal.</li>
+<li><a href="https://github.com/lapc506/payments-core/tree/main/openspec/changes/escrow-port/design.md"><code>openspec/changes/escrow-port/design.md</code></a>
+  — normative design (this page is the reader view of that doc).</li>
+<li><a href="../../integrations/consumers/aduanext/">AduaNext consumer page</a>
+  — Flow A + Flow F reference consumer.</li>
+<li><a href="../../adapters/stripe/">Stripe adapter (P0)</a> — will host the Stripe Connect
+  escrow implementation in a P1 follow-up change.</li>
+<li><a href="../../adapters/onvopay/">OnvoPay adapter (P0)</a> — will host the OnvoPay
+  escrow implementation in a P1 follow-up change.</li>
+</ul>
 
 
 
