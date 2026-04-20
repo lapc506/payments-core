@@ -24,6 +24,8 @@ import {
   GatewayUnavailableError,
   createGatewayRef,
   type AgenticPaymentPort,
+  type Donation,
+  type DonationPort,
   type Escrow,
   type EscrowPort,
   type FXRatePort,
@@ -42,13 +44,16 @@ import {
 import {
   makeCancelSubscription,
   makeConfirmCheckout,
+  makeCreateOneTimeDonation,
   makeCreatePayout,
+  makeCreateRecurringDonation,
   makeCreateSubscription,
   makeDisputeEscrow,
   makeGetPaymentHistory,
   makeHandleAgenticPayment,
   makeHoldEscrow,
   makeInitiateCheckout,
+  makeManageRecurringDonation,
   makeProcessWebhook,
   makeReconcileDaily,
   makeRefundPayment,
@@ -179,6 +184,20 @@ const stubFx: FXRatePort = {
   lookup: () => unavailable(),
 };
 
+// DonationPort has no real adapter yet. Stripe and OnvoPay charges can
+// carry donation metadata through `PaymentGatewayPort`; wrapping them as
+// first-class `DonationPort` implementations lands in a follow-up change.
+// Until then, every donation RPC returns `UNAVAILABLE`.
+function stubDonationPortFor(gateway: GatewayName): DonationPort {
+  return {
+    gateway,
+    initiateOneTime: () => unavailableFor(gateway),
+    initiateRecurring: () => unavailableFor(gateway),
+    pauseRecurring: () => unavailableFor(gateway),
+    cancelRecurring: () => unavailableFor(gateway),
+  };
+}
+
 // Per-gateway stubs for the three wired ports. Only constructed when a
 // caller asks for a gateway that hasn't been registered; the stub carries
 // the requested gateway name so the error message is accurate.
@@ -268,6 +287,17 @@ class InMemoryPayoutRepo {
   }
 }
 
+class InMemoryDonationRepo {
+  private readonly items = new Map<string, Donation>();
+  save(d: Donation): Promise<void> {
+    this.items.set(d.id, d);
+    return Promise.resolve();
+  }
+  findById(id: string): Promise<Donation | null> {
+    return Promise.resolve(this.items.get(id) ?? null);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Wire + start
 // ---------------------------------------------------------------------------
@@ -284,6 +314,7 @@ function buildUseCasesInternal(env: AdapterEnv) {
   const subRepo = new InMemorySubscriptionRepo();
   const escrowRepo = new InMemoryEscrowRepo();
   const payoutRepo = new InMemoryPayoutRepo();
+  const donationRepo = new InMemoryDonationRepo();
 
   // Real adapters constructed from env; unconfigured gateways fall through
   // to per-gateway stubs that return `UNAVAILABLE` on every call.
@@ -312,6 +343,9 @@ function buildUseCasesInternal(env: AdapterEnv) {
   };
   const payoutGateways = {
     resolvePayoutGateway: (_g: GatewayName): PayoutGatewayPort => stubPayoutGateway,
+  };
+  const donationGateways = {
+    resolveDonationGateway: (g: GatewayName): DonationPort => stubDonationPortFor(g),
   };
   const verifierRegistry = {
     resolveVerifier,
@@ -390,6 +424,20 @@ function buildUseCasesInternal(env: AdapterEnv) {
     }),
     getPaymentHistory: makeGetPaymentHistory({ reader: emptyHistoryReader }),
     reconcileDaily: makeReconcileDaily({ registry: reconciliationRegistry }),
+    createOneTimeDonation: makeCreateOneTimeDonation({
+      gateways: donationGateways,
+      repo: donationRepo,
+      idempotency,
+    }),
+    createRecurringDonation: makeCreateRecurringDonation({
+      gateways: donationGateways,
+      repo: donationRepo,
+      idempotency,
+    }),
+    manageRecurringDonation: makeManageRecurringDonation({
+      gateways: donationGateways,
+      idempotency,
+    }),
   };
 }
 

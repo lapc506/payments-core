@@ -117,3 +117,21 @@ export {
   type ReconcileDailyOutput,
   type ReconcileDailyDeps,
 } from './use_cases/reads.js';
+
+export {
+  makeCreateOneTimeDonation,
+  makeCreateRecurringDonation,
+  makeManageRecurringDonation,
+  type CreateDonationCommonInput,
+  type CreateOneTimeDonationInput,
+  type CreateOneTimeDonationOutput,
+  type CreateOneTimeDonationDeps,
+  type CreateRecurringDonationInput,
+  type CreateRecurringDonationOutput,
+  type CreateRecurringDonationDeps,
+  type ManageRecurringDonationInput,
+  type ManageRecurringDonationOutput,
+  type ManageRecurringDonationDeps,
+  type DonationRegistryPort,
+  type DonationRepositoryPort,
+} from './use_cases/donations.js';

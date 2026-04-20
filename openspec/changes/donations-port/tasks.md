@@ -1,5 +1,11 @@
 # Tasks — DonationPort
 
+> **Landed in PR** (GitHub Issue #27, branch `feat/issue-27-donations-port`).
+> Scope delivered: port interface, three wrapper use cases, main.ts stub
+> wiring, unit tests. Adapter wrappers (`StripeDonationAdapter`,
+> `OnvoPayDonationAdapter`), the Postgres repository, event emission, and the
+> docs page land in follow-ups to keep the PR under the 15-file budget.
+
 ## Linear
 
 - Title: `payments-core: DonationPort (one-time + recurring, campaign_id metadata hook)`
@@ -12,23 +18,23 @@
 
 ### Port expansion
 
-- [ ] `src/domain/ports/donation-port.ts` expanded with the full `DonationPort` interface per `design.md`.
-- [ ] `DonorRef`, `DonorVisibility`, `DonationRecurrence` types declared.
-- [ ] Export updates in `src/domain/ports/index.ts`.
+- [x] `DonationPort` interface added to `src/domain/ports/index.ts` (kept in the single ports file to honor the 15-file budget tracked on the ports module).
+- [x] `DonorVisibility`, `DonationRecurrence`, `DonationRef`, `InitiateOneTimeDonationInput`, `InitiateRecurringDonationInput`, `InitiateDonationResult` types declared alongside the port.
+- [x] Signatures: `initiateOneTime`, `initiateRecurring`, `pauseRecurring(gatewayRef, idempotencyKey)`, `cancelRecurring(gatewayRef, idempotencyKey)`. `DonorRef` is deferred until the adapter change lands — the port takes a flat `donorReference: string` today, matching how the existing `Donation` entity already models a donor.
 
 ### Use cases
 
-- [ ] `InitiateDonation` — handles one-time + switches to `SetupRecurringDonation` when `recurrence` is present.
-- [ ] `SetupRecurringDonation` — calls gateway's recurring setup, persists `Donation`, emits `RecurringDonationActivated`.
-- [ ] `CancelRecurringDonation` — idempotent by key.
-- [ ] `ListDonationsForCampaign` — paginated query via `DonationRepositoryPort.listForCampaign`.
+- [x] `CreateOneTimeDonation` — validates `Money > 0`, idempotency-checks, calls `DonationPort.initiateOneTime`, persists a one-time `Donation`, returns a `DonationRef`.
+- [x] `CreateRecurringDonation` — same shape + `recurrence` spec; kind `recurring`.
+- [x] `ManageRecurringDonation` — discriminated-union input (`pause` | `cancel`) addressed by `gatewayRef`. Idempotent by key.
+- [ ] `ListDonationsForCampaign` — deferred with the Postgres repository change.
 
 ### Adapters
 
-- [ ] `StripeDonationAdapter` — lives under `src/adapters/outbound/stripe/`; reuses the pinned Stripe 18.5.0 client.
-- [ ] `OnvoPayDonationAdapter` — lives under `src/adapters/outbound/onvopay/`; follows the same metadata pattern.
-- [ ] Both adapters attach `campaign_id` (when present), `donor_visibility`, and `recurrence.*` to the gateway's metadata map.
-- [ ] Anonymous donor handling: `receipt_email` suppressed in Stripe when `donorVisibility !== 'public'`.
+- [ ] `StripeDonationAdapter` — deferred to a follow-up change (keeps this PR ≤ 8 files; DonationPort consumers currently fall through to `stubDonationPortFor` which raises `GatewayUnavailableError`).
+- [ ] `OnvoPayDonationAdapter` — deferred, same rationale.
+- [ ] Both adapters will attach `campaign_id` (when present), `donor_visibility`, and `recurrence.*` to the gateway's metadata map. The use cases already enrich the metadata on the domain side so the adapter change only needs to pass it through.
+- [ ] Anonymous donor handling: `receipt_email` suppression in Stripe when `donorVisibility !== 'public'` — deferred with the adapter.
 
 ### Event emission
 
@@ -44,12 +50,12 @@
 
 ### Tests
 
-- [ ] Unit: each use case with fake adapters + in-memory repo.
-- [ ] Unit: Stripe adapter one-time donation + recurring donation flow, mocking the SDK.
-- [ ] Unit: OnvoPay adapter one-time + recurring; webhook dispatch to `DonationReceived` event.
-- [ ] Unit: `listForCampaign` pagination + empty-result case.
-- [ ] Integration (gated by `STRIPE_SECRET_KEY` + `ONVOPAY_API_KEY`): a live one-time donation on each gateway, followed by `listDonationsForCampaign` returning the donation.
-- [ ] PII guard: email-hash column is SHA-256 of `email.toLowerCase().trim()`.
+- [x] Unit: each use case with a fake `DonationPort` implementation + in-memory repo. Happy path, idempotency replay, zero/negative amount rejection, gateway-error surfacing, and campaign_id present/absent branches are all covered.
+- [ ] Unit: Stripe adapter one-time donation + recurring donation flow, mocking the SDK — deferred with the adapter change.
+- [ ] Unit: OnvoPay adapter one-time + recurring; webhook dispatch to `DonationReceived` event — deferred with the adapter change.
+- [ ] Unit: `listForCampaign` pagination + empty-result case — deferred with the repository change.
+- [ ] Integration (gated by `STRIPE_SECRET_KEY` + `ONVOPAY_API_KEY`): a live one-time donation on each gateway — deferred.
+- [ ] PII guard: email-hash column is SHA-256 of `email.toLowerCase().trim()` — deferred with the Postgres schema.
 
 ### Docs
 
